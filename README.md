@@ -6,7 +6,7 @@ CloudFront + WAF + Shield Advanced in front of NGINX/EC2, with a 3-way architect
 
 ## What This Is
 
-A CDK-deployed proof-of-concept demonstrating edge security for a gaming studio's player gateway. The PoC adds a managed edge layer (CloudFront, WAF, Shield Advanced) in front of the existing NGINX/EC2 backend without modifying it.
+A CDK-deployed proof-of-concept demonstrating edge security for a gaming studio's player gateway traffic (Layer 7). The PoC adds a managed edge layer (CloudFront, WAF, Shield Advanced) in front of the APIs. Accounts need to be enrolled on Enterprise Support for Shield Advanced.
 
 ## Why These Patterns Matter
 
@@ -16,11 +16,11 @@ These three patterns solve this by placing a managed edge security layer (CloudF
 
 Each pattern represents a different operational and cost tradeoff:
 
-- **Pattern 1** keeps existing infrastructure intact — add edge security without re-architecting
-- **Pattern 2** eliminates operational overhead — no servers to patch, instant scaling for bursts
-- **Pattern 3** adds managed API features — throttling, auth, validation for internal/admin APIs
+- **Pattern 1** traditional EC2 ASG backends running NGINX — add edge security without re-architecting
+- **Pattern 2** Lambda based backends eliminating operational overhead — no servers to patch, instant scaling for bursts
+- **Pattern 3** API Gateway backend with managed API features — throttling, auth, validation for internal/admin APIs
 
-The blueprint deploys all three side-by-side so teams can compare latency, cost, and operational complexity with real traffic before committing to a migration path.
+The blueprint deploys all three side-by-side so teams can compare latency, cost, and operational complexity with real traffic before committing to CloudFront.
 
 ## Patterns
 
