@@ -8,9 +8,31 @@ CloudFront + WAF + Shield Advanced in front of NGINX/EC2, with a 3-way architect
 
 A CDK-deployed proof-of-concept demonstrating edge security for a gaming studio's player gateway. The PoC adds a managed edge layer (CloudFront, WAF, Shield Advanced) in front of the existing NGINX/EC2 backend without modifying it.
 
-![Architecture](docs/architecture.png)
+## Patterns
 
-**Three architecture paths deployed behind the same CloudFront distribution:**
+This blueprint deploys three architecture patterns behind the same CloudFront + WAF + Shield Advanced edge layer, allowing side-by-side comparison.
+
+### Pattern 1: CloudFront + ALB + NGINX/EC2
+
+![Pattern 1](docs/pattern1-nginx-ec2.png)
+
+EC2 Auto Scaling Group running NGINX behind an Application Load Balancer. CloudFront provides edge caching and TLS termination, WAF handles rate limiting and bot detection, Shield Advanced provides DDoS protection. This pattern suits teams already operating NGINX who want to add edge security without changing their backend.
+
+### Pattern 2: CloudFront + ALB + Lambda
+
+![Pattern 2](docs/pattern2-lambda.png)
+
+Serverless compute using Lambda functions organized in cells for blast radius isolation. Each cell scales independently and can be deployed with canary traffic shifting via CodeDeploy. ElastiCache Redis provides distributed rate limiting across cells. This pattern eliminates operational overhead (no patching, no AMIs, no capacity planning) and scales instantly for traffic bursts.
+
+### Pattern 3: CloudFront + API Gateway + Lambda
+
+![Pattern 3](docs/pattern3-apigateway.png)
+
+Fully managed API layer using API Gateway HTTP API in front of Lambda. API Gateway adds built-in throttling, request validation, and IAM/JWT authorization. This pattern is best suited for admin and internal APIs where the additional API management features justify the per-request cost at lower traffic volumes.
+
+---
+
+**All three patterns are deployed behind the same CloudFront distribution for comparison:**
 
 | Path | Architecture | Pattern |
 |------|-------------|---------|
