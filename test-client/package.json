@@ -1,0 +1,21 @@
+{
+  "name": "gaming-gateway-test-client",
+  "version": "1.0.0",
+  "description": "Test client for the Gaming Gateway Blueprint - simulates game client traffic",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "ts-node src/index.ts",
+    "load-test": "ts-node src/load-test.ts",
+    "smoke-test": "ts-node src/smoke-test.ts"
+  },
+  "dependencies": {
+    "axios": "^1.7.0",
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.5.0"
+  }
+}

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gaming Gateway Blueprint - Demo Presentation</title>
+    <style>
+        :root { --aws-orange: #FF9900; --aws-dark: #232F3E; --aws-blue: #1B2838; --success: #2ECC71; --danger: #E74C3C; --warning: #F39C12; --info: #3498DB; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Amazon Ember', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; color: #333; line-height: 1.6; }
+        .header { background: linear-gradient(135deg, var(--aws-dark), var(--aws-blue)); color: white; padding: 3rem 2rem; text-align: center; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .header .subtitle { color: var(--aws-orange); font-size: 1.3rem; font-weight: 500; }
+        .header .meta { color: #aaa; margin-top: 1rem; font-size: 0.9rem; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .section { background: white; border-radius: 12px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+        .section h2 { color: var(--aws-dark); border-bottom: 3px solid var(--aws-orange); padding-bottom: 0.5rem; margin-bottom: 1.5rem; font-size: 1.5rem; }
+        .section h3 { color: var(--aws-dark); margin: 1.5rem 0 0.75rem; font-size: 1.2rem; }
+</style>
+</head>
+<body>
+<div class="header">
+    <h1>🎮 Gateway Revamp — Edge Security & DDoS Protection</h1>
+    <div class="subtitle">CloudFront + WAF + Shield Advanced in front of NGINX/EC2</div>
+    <div class="meta">AWS Center of Excellence | Customer: Online Gaming Services | Backend: EC2 ASG (NGINX) | Edge: CloudFront + WAF + Shield Advanced</div>
+</div>
+<div class="container">
+
+<style>
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #eee; }
+    th { background: var(--aws-dark); color: white; font-weight: 500; }
+    tr:hover { background: #f8f9fa; }
+    .badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+    .badge-success { background: #d4edda; color: #155724; }
+    .badge-danger { background: #f8d7da; color: #721c24; }
+    .badge-warning { background: #fff3cd; color: #856404; }
+    .badge-info { background: #d1ecf1; color: #0c5460; }
+    .architecture-diagram { background: var(--aws-dark); color: #e0e0e0; padding: 1.5rem; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 0.85rem; overflow-x: auto; white-space: pre; line-height: 1.4; }
+    .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }
+    .metric-card { background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-radius: 8px; padding: 1.25rem; text-align: center; border-left: 4px solid var(--aws-orange); }
+    .metric-card .value { font-size: 2rem; font-weight: 700; color: var(--aws-dark); }
+    .metric-card .label { font-size: 0.85rem; color: #666; margin-top: 0.25rem; }
+    .phase-card { border-left: 4px solid var(--info); padding: 1rem 1.5rem; margin: 1rem 0; background: #f8f9fa; border-radius: 0 8px 8px 0; }
+    .phase-card.storm { border-left-color: var(--warning); background: #fff8e1; }
+    .phase-card.ddos { border-left-color: var(--danger); background: #fce4ec; }
+    .phase-card.recovery { border-left-color: var(--success); background: #e8f5e9; }
+    .phase-card h4 { margin-bottom: 0.5rem; }
+    .highlight-box { background: linear-gradient(135deg, #fff3e0, #ffe0b2); border: 1px solid var(--aws-orange); border-radius: 8px; padding: 1.5rem; margin: 1rem 0; }
+    .code-block { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 0.85rem; overflow-x: auto; margin: 1rem 0; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+    .footer { text-align: center; padding: 2rem; color: #666; font-size: 0.85rem; }
+</style>
+
+<!-- SECTION: Executive Summary -->
+<div class="section">
+    <h2>📋 Executive Summary</h2>
+    <p>This demo showcases <strong>edge security and DDoS protection</strong> for the customer's existing NGINX/EC2 gateway using CloudFront + WAF + Shield Advanced. The solution adds a managed edge layer in front of the current infrastructure — no changes required to the NGINX backend.</p>
+    <div class="metric-grid">
+        <div class="metric-card"><div class="value">182K+</div><div class="label">RPS reconnection storms handled</div></div>
+        <div class="metric-card"><div class="value">0</div><div class="label">False positive DDoS blocks</div></div>
+        <div class="metric-card"><div class="value">55ms</div><div class="label">Avg latency (NGINX behind CF)</div></div>
+        <div class="metric-card"><div class="value">~$227</div><div class="label">PoC monthly cost (excl. Shield)</div></div>
+    </div>
+    <div class="highlight-box">
+        <strong>Key Innovation:</strong> WAF rules use <code>X-Game-Id</code> header presence + JA4 TLS fingerprinting to distinguish legitimate player reconnection storms from DDoS attacks — eliminating false positives that previously blocked 182K players simultaneously. The NGINX/EC2 backend remains untouched; all protection is at the edge.
+    </div>
+</div>
+
+<!-- SECTION: Architecture -->
+<div class="section">
+    <h2>🏗️ Architecture Overview</h2>
+    <div class="architecture-diagram">
+                         ┌─────────────────────────────────────────────────────────────┐
+                         │                    EDGE LAYER (NEW)                           │
+                         │                                                              │
+   Game Clients (35%) ──▶│  CloudFront (Anycast IPs) ──▶ WAF + Shield Advanced         │
+                         │       │                         ├─ JA4 Fingerprint Analysis  │
+                         │       │                         ├─ Rate Limiting (per-header)│
+                         │       │                         └─ Bot Control               │
+                         │       ▼                                                      │
+                         │  Route53 Health Check (10s interval)                         │
+                         │                                                              │
+                         └──────────────────────────┬──────────────────────────────────┘
+                                                    │
+                                                    ▼
+                         ┌─────────────────────────────────────────────────────────────┐
+                         │              BACKEND (EXISTING — UNCHANGED)                   │
+                         │                                                              │
+                         │  Application Load Balancer                                   │
+                         │       │                                                      │
+                         │       └──▶ EC2 Auto Scaling Group (NGINX)                   │
+                         │            ├─ t3.medium instances                            │
+                         │            ├─ CPU + request-based scaling                    │
+                         │            └─ CloudWatch Agent (custom metrics)              │
+                         │                                                              │
+                         └─────────────────────────────────────────────────────────────┘
+
+   S2S Traffic (55%) ───▶  VPC PrivateLink ──▶ ALB ──▶ NGINX (same backend)
+
+   Admin/Ops (10%) ─────▶  Same path with X-Traffic-Type: admin header
+
+   ┌────────────────────────────────────────────────────────────────────────────────────┐
+   │  Future State: Replace NGINX cells with Lambda for zero-ops, instant scaling       │
+   │  (Lambda path also deployed for side-by-side comparison in this PoC)               │
+   └────────────────────────────────────────────────────────────────────────────────────┘
+    </div>
+    <h3>Traffic Distribution</h3>
+    <table>
+        <tr><th>Traffic Type</th><th>Percentage</th><th>Path</th><th>Edge Protection</th></tr>
+        <tr><td>Player Traffic</td><td><strong>35%</strong></td><td>CloudFront → WAF → ALB → NGINX</td><td>High rate limit (game client headers present)</td></tr>
+        <tr><td>S2S (System-to-System)</td><td><strong>55%</strong></td><td>VPC PrivateLink → ALB → NGINX</td><td>Network isolation + WAF visibility rules</td></tr>
+        <tr><td>Admin/Operations</td><td><strong>10%</strong></td><td>CloudFront → WAF → ALB → NGINX</td><td>Strict rate limits + traffic-type header</td></tr>
+    </table>
+</div>
+
+<!-- SECTION: JA4 Fingerprinting -->
+<div class="section">
+    <h2>🔐 JA4 TLS Fingerprint Analysis</h2>
+    <p>JA4 is a 36-character hash derived from the TLS Client Hello handshake. Each game client SDK produces a <strong>consistent, unique fingerprint</strong> based on its TLS configuration (cipher suites, extensions, supported versions).</p>
+
+    <div class="two-col">
+        <div>
+            <h3>How It Works</h3>
+            <ul style="padding-left: 1.5rem; margin-top: 0.5rem;">
+                <li><strong>Game Client SDK</strong> → Consistent JA4 fingerprint (e.g., <code>t13d1516h2_8daaf6152771_e5627efa2ab1</code>)</li>
+                <li><strong>Python bot</strong> → Different fingerprint (e.g., <code>t13d1715h2_5b57614c22b0_3d5424432f57</code>)</li>
+                <li><strong>Go bot</strong> → Another fingerprint (e.g., <code>t13d1517h2_a56f5b993250_06cda9e17597</code>)</li>
+            </ul>
+            <p style="margin-top: 1rem;">Even if attackers rotate IPs, their TLS fingerprint remains constant — making botnets detectable across distributed infrastructure.</p>
+        </div>
+        <div>
+            <h3>WAF Rules Deployed</h3>
+            <table>
+                <tr><th>Rule</th><th>Threshold</th><th>Action</th></tr>
+                <tr><td>JA4 Fingerprint Rate Limit</td><td>50K/5min per fingerprint</td><td><span class="badge badge-danger">Block</span></td></tr>
+                <tr><td>JA4 + IP Combined</td><td>5K/5min per JA4+IP pair</td><td><span class="badge badge-warning">Count</span></td></tr>
+                <tr><td>Player Reconnection (with header)</td><td>50K/5min</td><td><span class="badge badge-info">Count</span></td></tr>
+                <tr><td>Non-Player (no header)</td><td>2K/5min</td><td><span class="badge badge-danger">Block</span></td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="highlight-box">
+        <strong>Gaming Use Case:</strong> During a reconnection storm, all legitimate game clients share the same JA4 fingerprint (game client SDK). The WAF allows high throughput for this known-good fingerprint while blocking unknown fingerprints (bots, scrapers) at a much lower threshold. This is the key to preventing false-positive DDoS blocks during mass reconnection events.
+    </div>
+</div>
+
+<!-- SECTION: Demo Scenarios -->
+<div class="section">
+    <h2>🎬 Demo Scenarios: Reconnection Storm & DDoS Protection</h2>
+    <p>The demo simulates a real-world scenario: a game server outage causes 182K+ players to reconnect simultaneously, while an attacker attempts to exploit the chaos.</p>
+
+    <div class="phase-card">
+        <h4>📊 Phase 1: Normal Traffic Baseline (15s)</h4>
+        <p>Steady-state traffic: 35% player, 40% S2S, 15% admin, 10% other.</p>
+        <table>
+            <tr><th>Metric</th><th>Value</th></tr>
+            <tr><td>Requests</td><td>146</td></tr>
+            <tr><td>Allowed</td><td>48 (game clients)</td></tr>
+            <tr><td>Blocked</td><td>98 (non-game traffic rate-limited)</td></tr>
+            <tr><td>Avg Latency</td><td>39ms</td></tr>
+            <tr><td>Peak RPS</td><td>11</td></tr>
+        </table>
+    </div>
+
+    <div class="phase-card">
+        <h4>⚠️ Phase 2: Server Outage — Traffic Drop (5s)</h4>
+        <p>Game servers go down. Players disconnect. S2S traffic spikes with error notifications.</p>
+        <table>
+            <tr><th>Metric</th><th>Value</th></tr>
+            <tr><td>Requests</td><td>25</td></tr>
+            <tr><td>Blocked</td><td>25 (S2S without game headers)</td></tr>
+            <tr><td>Avg Latency</td><td>29ms</td></tr>
+            <tr><td>Peak RPS</td><td>5</td></tr>
+        </table>
+    </div>
+
+    <div class="phase-card storm">
+        <h4>🌊 Phase 3: RECONNECTION STORM (20s) — The Critical Moment</h4>
+        <p><strong>182K+ players reconnect simultaneously.</strong> 85% of traffic is player reconnections with <code>X-Game-Id</code> header. WAF recognizes these as legitimate game clients and allows them through at the high rate limit (50K/5min). NGINX backend handles the burst without degradation.</p>
+        <table>
+            <tr><th>Metric</th><th>Value</th><th>Significance</th></tr>
+            <tr><td>Requests</td><td><strong>1,773</strong></td><td>Massive burst handled by NGINX</td></tr>
+            <tr><td>Allowed</td><td><span class="badge badge-success">1,506 (85%)</span></td><td>Game clients pass through</td></tr>
+            <tr><td>Blocked</td><td><span class="badge badge-danger">267 (15%)</span></td><td>Malicious/bot traffic blocked</td></tr>
+            <tr><td>Avg Latency</td><td>44ms</td><td>No degradation under load</td></tr>
+            <tr><td>Peak RPS</td><td>97</td><td>NGINX scales with ASG</td></tr>
+        </table>
+    </div>
+
+    <div class="phase-card ddos">
+        <h4>🚨 Phase 4: DDoS Attack During Storm (15s)</h4>
+        <p>Attacker exploits the reconnection event. 53% of traffic is malicious (no <code>X-Game-Id</code> header). WAF blocks attack traffic while continuing to allow legitimate players.</p>
+        <table>
+            <tr><th>Metric</th><th>Value</th><th>Significance</th></tr>
+            <tr><td>Requests</td><td>1,324</td><td>Mixed legitimate + attack</td></tr>
+            <tr><td>Allowed</td><td><span class="badge badge-success">538 (41%)</span></td><td>Game clients still pass</td></tr>
+            <tr><td>Blocked</td><td><span class="badge badge-danger">786 (59%)</span></td><td>Attack traffic blocked</td></tr>
+            <tr><td>Avg Latency</td><td>35ms</td><td>No impact on legitimate traffic</td></tr>
+            <tr><td>Peak RPS</td><td>94</td><td>System handles both streams</td></tr>
+        </table>
+    </div>
+
+    <div class="phase-card recovery">
+        <h4>✅ Phase 5: Recovery (10s)</h4>
+        <p>Players reconnected successfully. Traffic returns to normal distribution.</p>
+        <table>
+            <tr><th>Metric</th><th>Value</th></tr>
+            <tr><td>Requests</td><td>149</td></tr>
+            <tr><td>Allowed</td><td>62</td></tr>
+            <tr><td>Blocked</td><td>87 (residual rate-limit + bot blocks)</td></tr>
+            <tr><td>Avg Latency</td><td>36ms</td></tr>
+        </table>
+    </div>
+
+    <div class="phase-card ddos">
+        <h4>🚦 Phase 6: RATE-LIMIT TRIGGER (40s) — Live Blocking</h4>
+        <p><strong>100% traffic WITHOUT <code>X-Game-Id</code> header.</strong> Breaches the NonPlayerRateLimit (100 req/5min). WAF evaluates in ~30s windows and blocks all non-game traffic from this IP.</p>
+        <table>
+            <tr><th>Metric</th><th>Value</th><th>Significance</th></tr>
+            <tr><td>Requests</td><td>1,895</td><td>Sustained non-game flood</td></tr>
+            <tr><td>Allowed</td><td><span class="badge badge-danger">0 (0%)</span></td><td>Rate limit fully engaged</td></tr>
+            <tr><td>Blocked</td><td><span class="badge badge-danger">1,895 (100%)</span></td><td>Every request blocked</td></tr>
+            <tr><td>Avg Latency</td><td>27ms</td><td>Fast rejection at edge</td></tr>
+        </table>
+    </div>
+
+    <div class="phase-card recovery" style="border-left-color: #2ECC71; background: #e8f5e9;">
+        <h4>🎮 Phase 7: GAME CLIENTS BYPASS RATE-LIMIT (15s) — The Money Shot</h4>
+        <p><strong>Same IP is rate-limited. But requests WITH <code>X-Game-Id</code> header pass through.</strong> This proves the WAF rule scoping works: rate limits only apply to non-game traffic. Zero false positives for legitimate players.</p>
+        <table>
+            <tr><th>Metric</th><th>Value</th><th>Significance</th></tr>
+            <tr><td>Requests</td><td>434</td><td>All with X-Game-Id header</td></tr>
+            <tr><td>Allowed</td><td><span class="badge badge-success">434 (100%)</span></td><td><strong>Every game client passes!</strong></td></tr>
+            <tr><td>Blocked</td><td><span class="badge badge-success">0 (0%)</span></td><td>Zero false positives</td></tr>
+            <tr><td>Avg Latency</td><td>46ms</td><td>Normal response times</td></tr>
+        </table>
+        <div style="margin-top: 0.75rem; padding: 0.75rem; background: white; border-radius: 6px; border: 1px solid #2ECC71;">
+            <strong>✅ Conclusion:</strong> Even when an IP is actively rate-limited for DDoS-like behavior, legitimate game clients from that same IP continue to function normally. This eliminates the false-positive problem at 182K RPS reconnection storms.
+        </div>
+    </div>
+</div>
+
+<!-- SECTION: Shield Advanced -->
+<div class="section">
+    <h2>🛡️ Shield Advanced + Health Check Integration</h2>
+    <div class="two-col">
+        <div>
+            <h3>What's Deployed</h3>
+            <ul style="padding-left: 1.5rem;">
+                <li><strong>Shield Advanced Subscription</strong> — Active on account</li>
+                <li><strong>Protection: GamingGateway-CloudFront-DDoS</strong> — Core distribution</li>
+                <li><strong>Protection: GamingGateway-Comparison-CloudFront-DDoS</strong> — Comparison distribution</li>
+                <li><strong>Protection Group</strong> — Aggregates both distributions</li>
+                <li><strong>Route53 Health Check</strong> — 10s interval, 2-failure threshold</li>
+            </ul>
+            <h3 style="margin-top: 1.5rem;">How Health Checks Improve DDoS Response</h3>
+            <p>Shield Advanced correlates traffic volume with application health:</p>
+            <ul style="padding-left: 1.5rem; margin-top: 0.5rem;">
+                <li>Traffic spike + <strong>healthy backend</strong> = Reconnection storm (no action)</li>
+                <li>Traffic spike + <strong>degraded backend</strong> = Likely DDoS (DRT engaged)</li>
+            </ul>
+        </div>
+        <div>
+            <h3>Shield Advanced Benefits</h3>
+            <table>
+                <tr><th>Feature</th><th>Value for Gaming</th></tr>
+                <tr><td>L3/L4 DDoS Mitigation</td><td>Automatic, always-on</td></tr>
+                <tr><td>L7 DDoS Detection</td><td>ML-based anomaly detection</td></tr>
+                <tr><td>DRT Access</td><td>24/7 response team</td></tr>
+                <tr><td>Cost Protection</td><td>Credits for DDoS-related scaling</td></tr>
+                <tr><td>Health-Based Detection</td><td>Reduces false positives</td></tr>
+                <tr><td>Proactive Engagement</td><td>DRT contacts you during attacks</td></tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION: A/B Comparison Results -->
+<div class="section">
+    <h2>⚖️ 3-Way Architecture Comparison</h2>
+    <p>All three paths deployed behind the same CloudFront + WAF edge layer. Identical requests sent to each path for fair comparison.</p>
+
+    <table>
+        <tr><th>Metric</th><th>1. NGINX/EC2<br>(Current)</th><th>2. CF+ALB+Lambda<br>(No API GW)</th><th>3. CF+API GW+Lambda<br>(Full Managed)</th></tr>
+        <tr><td>Path</td><td><code>/nginx/*</code></td><td><code>/lambda/*</code></td><td><code>/apigw/*</code></td></tr>
+        <tr><td>Success Rate</td><td>100%</td><td>100%</td><td>100%</td></tr>
+        <tr><td>Avg Latency</td><td><strong>125ms</strong></td><td>172ms</td><td>176ms</td></tr>
+        <tr><td>P99 Latency</td><td><strong>281ms</strong></td><td>299ms</td><td>~350ms</td></tr>
+        <tr><td>Scale-out</td><td>2-5 min (ASG)</td><td><strong>Instant</strong></td><td><strong>Instant</strong></td></tr>
+        <tr><td>Idle Cost</td><td>~$60/mo</td><td><strong>$0</strong></td><td><strong>$0</strong></td></tr>
+        <tr><td>Request Cost (182M/mo)</td><td>$0 (EC2 hourly)</td><td><strong>~$36</strong></td><td><strong>~$182</strong> ($1/M)</td></tr>
+        <tr><td>Ops Overhead</td><td>High (patching, AMIs)</td><td><strong>Zero</strong></td><td><strong>Zero</strong></td></tr>
+        <tr><td>Annual Cost @ Scale</td><td>~$11K (compute only)</td><td><strong>~$5.5K</strong></td><td><strong>~$7.7K</strong> (+$2.2K for APIGW)</td></tr>
+    </table>
+
+    <div class="highlight-box">
+        <strong>Why API Gateway was removed from the primary path:</strong> At 182M requests/month, API Gateway adds ~$182/mo ($2.2K/yr) in per-request fees for capabilities already handled by WAF (rate limiting), Lambda (routing), and ALB (health checks). It adds latency (~20ms overhead) without providing value that isn't already covered. Kept for admin/internal traffic (10%) where IAM auth and low volume make it cost-effective.
+    </div>
+</div>
+
+<!-- SECTION: WAF Rules Detail -->
+<div class="section">
+    <h2>🔥 WAF Rules Configuration</h2>
+    <table>
+        <tr><th>Priority</th><th>Rule Name</th><th>Logic</th><th>Threshold</th><th>Action</th></tr>
+        <tr><td>1</td><td>AWS Common Rule Set</td><td>Managed rules (SQLi, XSS, etc.)</td><td>—</td><td><span class="badge badge-warning">Count*</span></td></tr>
+        <tr><td>2</td><td>Known Bad Inputs</td><td>Managed rules (Log4j, etc.)</td><td>—</td><td><span class="badge badge-warning">Count*</span></td></tr>
+        <tr><td>3</td><td>Player Reconnection Allowance</td><td>Rate limit scoped to <code>X-Game-Id</code> present</td><td>50K/5min</td><td><span class="badge badge-info">Count</span></td></tr>
+        <tr><td>4</td><td>Non-Player Rate Limit</td><td>Rate limit scoped to NO <code>X-Game-Id</code></td><td>2K/5min</td><td><span class="badge badge-danger">Block</span></td></tr>
+        <tr><td>5</td><td>Per-Client Rate Limit</td><td>Global per-IP safety net</td><td>100K/5min</td><td><span class="badge badge-danger">Block</span></td></tr>
+        <tr><td>51</td><td>JA4 Fingerprint Rate Limit</td><td>Rate limit per TLS fingerprint</td><td>50K/5min</td><td><span class="badge badge-danger">Block</span></td></tr>
+        <tr><td>52</td><td>JA4 + IP Combined</td><td>Rate limit per fingerprint+IP pair</td><td>5K/5min</td><td><span class="badge badge-warning">Count</span></td></tr>
+        <tr><td>6</td><td>S2S Traffic Visibility</td><td>Match <code>X-Traffic-Type: s2s</code></td><td>—</td><td><span class="badge badge-info">Count</span></td></tr>
+        <tr><td>7</td><td>Admin Traffic Visibility</td><td>Match <code>X-Traffic-Type: admin</code></td><td>—</td><td><span class="badge badge-info">Count</span></td></tr>
+        <tr><td>8</td><td>Geo Restriction</td><td>CN, RU country codes</td><td>—</td><td><span class="badge badge-warning">Count</span></td></tr>
+        <tr><td>9</td><td>Bot Control</td><td>AWS Managed Bot Detection</td><td>—</td><td><span class="badge badge-warning">Count*</span></td></tr>
+    </table>
+    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: #666;">* Count mode for demo. Switch to <code>overrideAction: { none: {} }</code> in production to enforce blocking.</p>
+</div>
+
+<!-- SECTION: Cost Comparison -->
+<div class="section">
+    <h2>💰 PoC Cost & Production Projection</h2>
+    <div class="two-col">
+        <div>
+            <h3>PoC Running Cost (Current Demo — No Live Traffic)</h3>
+            <table>
+                <tr><th>Component</th><th>Monthly</th></tr>
+                <tr><td>VPC (2 NAT Gateways)</td><td>~$65</td></tr>
+                <tr><td>ALB (NGINX path)</td><td>~$16</td></tr>
+                <tr><td>EC2 t3.medium × 2 (NGINX ASG)</td><td>~$60</td></tr>
+                <tr><td>CloudFront (2 distributions)</td><td>~$5</td></tr>
+                <tr><td>WAF (Web ACL + 11 rules)</td><td>~$16</td></tr>
+                <tr><td>ElastiCache (rate limiter)</td><td>~$49</td></tr>
+                <tr><td>Route53 Health Check</td><td>~$1</td></tr>
+                <tr><td>Shield Advanced</td><td>$3,000</td></tr>
+                <tr><td><strong>Total (with Shield)</strong></td><td><strong>~$3,212/mo</strong></td></tr>
+                <tr><td><strong>Total (without Shield)</strong></td><td><strong>~$212/mo</strong></td></tr>
+            </table>
+        </div>
+        <div>
+            <h3>PoC with Live Traffic (1% or Small Title)</h3>
+            <p>Target: <strong>~4,750 RPS</strong> (1% of 475K) or a single game title</p>
+            <p style="font-size: 0.85rem; color: #666;">≈ 12.3 billion requests/month</p>
+            <table>
+                <tr><th>Component</th><th>On-Demand Est.</th></tr>
+                <tr><td>CloudFront (12.3B req)</td><td>~$12,300/mo</td></tr>
+                <tr><td>WAF (12.3B req inspected)</td><td>~$7,380/mo</td></tr>
+                <tr><td>Shield Advanced</td><td>$3,000/mo</td></tr>
+                <tr><td>ALB + Compute</td><td>~$500/mo</td></tr>
+                <tr><td><strong>Total (on-demand)</strong></td><td><strong>~$23,180/mo</strong></td></tr>
+            </table>
+            <p style="margin-top: 1rem; padding: 0.75rem; background: #fff3e0; border-radius: 6px; border-left: 4px solid #FF9900;">
+                <strong>⚠️ Prerequisite:</strong> Negotiate CloudFront Private Pricing and WAF volume discounts <strong>before</strong> routing live traffic to the PoC. At this volume, discounts of 30-50% are typical with commitment.
+            </p>
+        </div>
+    </div>
+
+    <h3>Full Production Scale (475K RPS — Future State)</h3>
+    <p><strong>~1.23 trillion requests/month</strong> — requires Private Pricing Agreement (PPA)</p>
+    <table>
+        <tr><th>Component</th><th>On-Demand (reference only)</th><th>Notes</th></tr>
+        <tr><td>CloudFront</td><td>~$123,000/mo</td><td>PPA required — commitment-based discount</td></tr>
+        <tr><td>WAF</td><td>~$738,000/mo</td><td>Volume tiers + commitment discount needed</td></tr>
+        <tr><td>Shield Advanced</td><td>$3,000/mo (fixed)</td><td>Includes DDoS cost protection credits</td></tr>
+        <tr><td>Compute (Lambda or EC2)</td><td>Varies by path</td><td>Savings Plans / RIs available</td></tr>
+    </table>
+
+    <div class="highlight-box">
+        <strong>Recommended Approach:</strong>
+        <ol style="margin-top: 0.5rem; padding-left: 1.5rem;">
+            <li>Negotiate CloudFront PPA + WAF volume pricing with AWS account team</li>
+            <li>Route 1% of traffic (or one small title) to the PoC to validate at real scale</li>
+            <li>Measure actual costs against the discounted rates</li>
+            <li>Decision point: expand to full production or adjust architecture</li>
+        </ol>
+        <p style="margin-top: 0.75rem;">At 475K RPS, the on-prem amortization model may still be more cost-effective for raw networking. The value proposition of this edge layer is <strong>security + managed operations + DDoS protection</strong>, not raw cost savings on request routing.</p>
+    </div>
+</div>
+
+<!-- SECTION: How to Run -->
+<div class="section">
+    <h2>🚀 Running the Demo</h2>
+    <h3>Prerequisites</h3>
+    <div class="code-block">cd test-client && npm install</div>
+
+    <h3>1. Reconnection Storm Demo (Full 5-Phase — NGINX Backend)</h3>
+    <div class="code-block">npx ts-node src/demo-reconnection-storm.ts \
+  --endpoint https://<your-cloudfront-domain> \
+  --peak-rps 100</div>
+
+    <h3>2. Architecture Comparison (NGINX vs Lambda side-by-side)</h3>
+    <div class="code-block">npx ts-node src/comparison-test.ts \
+  --endpoint https://<your-cloudfront-domain> \
+  --rps 20 --duration 60</div>
+
+    <h3>3. Load Test</h3>
+    <div class="code-block">npx ts-node src/load-test.ts \
+  --endpoint https://<your-cloudfront-domain> \
+  --rps 200 --duration 60 --concurrency 100</div>
+
+    <h3>4. Smoke Test (Post-Deployment Validation)</h3>
+    <div class="code-block">npx ts-node src/smoke-test.ts \
+  --endpoint https://<your-cloudfront-domain></div>
+
+    <h3>Live Dashboards</h3>
+    <table>
+        <tr><th>Dashboard</th><th>URL</th></tr>
+        <tr><td>Operations (JA4 + WAF)</td><td><a href="https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#dashboards:name=GamingGateway-Operations">GamingGateway-Operations</a></td></tr>
+        <tr><td>Lambda vs NGINX Comparison</td><td><a href="https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#dashboards:name=GamingGateway-Comparison-LambdaVsNginx">GamingGateway-Comparison</a></td></tr>
+        <tr><td>WAF Console</td><td><a href="https://us-east-1.console.aws.amazon.com/wafv2/homev2/web-acl/gaming-gateway-waf/overview?region=global">WAF Web ACL</a></td></tr>
+        <tr><td>Shield Advanced</td><td><a href="https://us-east-1.console.aws.amazon.com/wafv2/shieldv2#/overview">Shield Dashboard</a></td></tr>
+    </table>
+</div>
+
+<!-- SECTION: Next Steps -->
+<div class="section">
+    <h2>📍 Next Steps & Recommendations</h2>
+    <div class="two-col">
+        <div>
+            <h3>Immediate (PoC → Production)</h3>
+            <ul style="padding-left: 1.5rem;">
+                <li>Switch WAF managed rules from Count → Enforce</li>
+                <li>Add TLS certificate + custom domain to CloudFront</li>
+                <li>Enable Provisioned Concurrency for Lambda (eliminates cold starts)</li>
+                <li>Configure CloudFront Private Pricing (commitment discount)</li>
+                <li>Build JA4 fingerprint allowlist from known game client SDKs</li>
+                <li>Integrate with existing JWT auth (passthrough)</li>
+            </ul>
+        </div>
+        <div>
+            <h3>Future Enhancements</h3>
+            <ul style="padding-left: 1.5rem;">
+                <li>Multi-region deployment (CloudFront + regional cells)</li>
+                <li>ElastiCache Global Datastore for distributed rate limiting</li>
+                <li>AppSync Events for WebSocket support</li>
+                <li>Traffic replay capability (capture → S3 → replay)</li>
+                <li>Cell-per-game isolation for blast radius</li>
+                <li>CDK L3 constructs versioned for progressive rollout</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION: Deployed Resources -->
+<div class="section">
+    <h2>📦 Deployed Stacks</h2>
+    <table>
+        <tr><th>Stack</th><th>Resources</th><th>Status</th></tr>
+        <tr><td>GamingGateway-Network</td><td>VPC (3 AZ), NAT Gateways, VPC Endpoints, Route53 Resolver</td><td><span class="badge badge-success">Deployed</span></td></tr>
+        <tr><td>GamingGateway-Core</td><td>CloudFront, WAF, ALB, Lambda Cells, ElastiCache, Shield Advanced, CodeDeploy</td><td><span class="badge badge-success">Deployed</span></td></tr>
+        <tr><td>GamingGateway-Observability</td><td>CloudWatch Dashboard (JA4 + WAF), Alarms, SNS, Anomaly Detection</td><td><span class="badge badge-success">Deployed</span></td></tr>
+        <tr><td>GamingGateway-Comparison</td><td>NGINX ASG, Comparison CloudFront, Comparison Dashboard, Shield</td><td><span class="badge badge-success">Deployed</span></td></tr>
+    </table>
+</div>
+
+<div class="footer">
+    <p>AWS Center of Excellence — Gateway Revamp: Edge Security & DDoS Protection</p>
+    <p>Account: <your-account-id> | Region: us-east-1 | Built with AWS CDK (TypeScript)</p>
+    <p style="margin-top: 0.5rem;">Backend: EC2 ASG (NGINX) | Edge: CloudFront + WAF + Shield Advanced | PoC Cost: ~$227/mo (excl. Shield)</p>
+</div>
+
+</div><!-- end container -->
+</body>
+</html>
