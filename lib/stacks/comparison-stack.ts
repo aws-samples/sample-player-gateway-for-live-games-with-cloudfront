@@ -544,7 +544,7 @@ export class ComparisonStack extends cdk.Stack {
           '---',
           '| Path | Route | Backend | Cost Model |',
           '|------|-------|---------|------------|',
-          '| `/nginx/*` | CloudFront → NGINX ALB → EC2 ASG | NGINX (current) | EC2 hourly |',
+          '| `/nginx/*` | CloudFront → NGINX ALB → EC2 ASG | NGINX | EC2 hourly |',
           '| `/lambda/*` | CloudFront → Lambda ALB → Lambda | Lambda Cells | Pay-per-request |',
           '| `/apigw/*` | CloudFront → API Gateway → Lambda | API GW + Lambda | $1/M req + Lambda |',
           '',

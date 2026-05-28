@@ -11,7 +11,7 @@
  *
  * Traffic distribution simulated:
  * - 35% Player traffic (with X-Game-Id header)
- * - 55% S2S + Admin traffic (with X-Traffic-Type header)
+ * - 55% Game Servers + Admin traffic (with X-Traffic-Type header)
  * - 10% Unknown/malicious traffic (no identifying headers)
  *
  * Usage:
@@ -60,7 +60,7 @@ class ReconnectionStormDemo {
 
     // Phase 1: Normal traffic baseline
     console.log('\n\n📊 PHASE 1: Normal Traffic Baseline (15s)');
-    console.log('   Simulating steady-state: 35% player, 55% S2S+admin, 10% other');
+    console.log('   Simulating steady-state: 35% player, 55% Game Servers+admin, 10% other');
     console.log('   ─────────────────────────────────────────────────────────────');
     await this.runPhase('Baseline', 15, Math.floor(this.peakRps * 0.1), {
       player: 0.35,
@@ -71,7 +71,7 @@ class ReconnectionStormDemo {
 
     // Phase 2: Server outage - traffic drops
     console.log('\n\n⚠️  PHASE 2: Server Outage - Traffic Drop (5s)');
-    console.log('   Game servers go down. Players disconnect. S2S traffic spikes with errors.');
+    console.log('   Game servers go down. Players disconnect. Game server traffic spikes with errors.');
     console.log('   ─────────────────────────────────────────────────────────────');
     await this.runPhase('Outage', 5, Math.floor(this.peakRps * 0.05), {
       player: 0.05,
@@ -305,9 +305,9 @@ class ReconnectionStormDemo {
     console.log('║  → Legitimate reconnections: ALLOWED (high rate limit)                   ║');
     console.log('║  → DDoS without headers: BLOCKED (strict rate limit)                     ║');
     console.log('║                                                                          ║');
-    console.log('║  Backend: EC2 ASG running NGINX (current setup)                        ║');
+    console.log('║  Backend: EC2 ASG running NGINX (NGINX/EC2)                        ║');
     console.log('║  Edge: CloudFront + WAF + Shield Advanced + JA4 Fingerprinting           ║');
-    console.log('║  Traffic split: 35% Player | 55% S2S+Admin | 10% Other                   ║');
+    console.log('║  Traffic split: 35% Player | 55% Game Servers+Admin | 10% Other                   ║');
     console.log('║                                                                          ║');
     console.log(`║  Endpoint: ${this.endpoint.padEnd(56)}║`);
     console.log(`║  Peak RPS: ${this.peakRps.toString().padEnd(56)}║`);

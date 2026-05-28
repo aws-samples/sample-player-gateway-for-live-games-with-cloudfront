@@ -26,7 +26,7 @@ with Diagram(
 ):
     # Clients
     players = Users("Game Clients\n(35% traffic)")
-    s2s = Client("S2S Services\n(55% traffic)")
+    s2s = Client("Game Servers\n(55% traffic)")
     admin = Client("Admin/Ops\n(10% traffic)")
 
     with Cluster("Edge Layer (CloudFront + WAF + Shield)"):
@@ -35,17 +35,17 @@ with Diagram(
         shield = Shield("Shield\nAdvanced")
         healthcheck = Route53("Route53\nHealth Check")
 
-    with Cluster("Path 1: NGINX/EC2 (Current State)"):
+    with Cluster("Pattern 1: NGINX/EC2"):
         nginx_alb = ELB("ALB")
         nginx_asg = EC2Instances("EC2 ASG\n(NGINX)")
 
-    with Cluster("Path 2: Serverless (Proposed)"):
+    with Cluster("Pattern 2: Serverless"):
         lambda_alb = ELB("ALB")
         with Cluster("Lambda Cells"):
             cell0 = Lambda("Cell 0")
             cell1 = Lambda("Cell 1")
 
-    with Cluster("Path 3: API Gateway"):
+    with Cluster("Pattern 3: API Gateway"):
         apigw = APIGateway("HTTP API")
         apigw_lambda = Lambda("Lambda")
 

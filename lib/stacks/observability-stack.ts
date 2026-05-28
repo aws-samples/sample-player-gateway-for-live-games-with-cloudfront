@@ -192,13 +192,13 @@ export class ObservabilityStack extends cdk.Stack {
       label: 'Non-Player Blocks',
     });
 
-    const s2sTrafficMetric = new cloudwatch.Metric({
+    const gameServerTrafficMetric = new cloudwatch.Metric({
       namespace: 'AWS/WAFV2',
       metricName: 'CountedRequests',
-      dimensionsMap: { WebACL: 'gaming-gateway-waf', Rule: 'S2STrafficVisibility', Region: 'us-east-1' },
+      dimensionsMap: { WebACL: 'gaming-gateway-waf', Rule: 'GameServerTrafficVisibility', Region: 'us-east-1' },
       statistic: 'Sum',
       period: cdk.Duration.minutes(1),
-      label: 'S2S Traffic',
+      label: 'Game Server Traffic',
     });
 
     const adminTrafficMetric = new cloudwatch.Metric({
@@ -229,7 +229,7 @@ export class ObservabilityStack extends cdk.Stack {
       }),
       new cloudwatch.GraphWidget({
         title: 'Traffic Distribution (S2S + Admin)',
-        left: [s2sTrafficMetric, adminTrafficMetric],
+        left: [gameServerTrafficMetric, adminTrafficMetric],
         width: 8,
         height: 6,
       }),

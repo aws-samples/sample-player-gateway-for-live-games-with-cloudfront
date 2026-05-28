@@ -27,7 +27,7 @@ export interface NetworkStackProps extends cdk.StackProps {
  * and hybrid connectivity for the gaming gateway.
  *
  * Supports:
- * - S2S traffic via VPC endpoints and PrivateLink (45% of traffic)
+ * - Game server traffic via VPC endpoints and PrivateLink (45% of traffic)
  * - Hybrid DNS resolution (Route53 Resolver)
  * - Multi-AZ deployment for resilience
  */
@@ -91,10 +91,10 @@ export class NetworkStack extends cdk.Stack {
       privateDnsEnabled: true,
     });
 
-    // Security group for PrivateLink connections (S2S traffic from partner ecosystem)
+    // Security group for PrivateLink connections (Game server traffic from partner ecosystem)
     const privateLinkSg = new ec2.SecurityGroup(this, 'PrivateLinkSg', {
       vpc: this.vpc,
-      description: 'Security group for PrivateLink S2S connections',
+      description: 'Security group for PrivateLink game server connections',
       allowAllOutbound: false,
     });
 

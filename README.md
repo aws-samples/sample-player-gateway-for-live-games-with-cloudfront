@@ -12,11 +12,11 @@ A CDK-deployed proof-of-concept demonstrating edge security for a gaming studio'
 
 **Three architecture paths deployed behind the same CloudFront distribution:**
 
-| Path | Architecture | Purpose |
+| Path | Architecture | Pattern |
 |------|-------------|---------|
-| `/nginx/*` | CloudFront → ALB → EC2 ASG (NGINX) | Current setup |
-| `/lambda/*` | CloudFront → ALB → Lambda (cells) | Proposed serverless alternative |
-| `/apigw/*` | CloudFront → API Gateway → Lambda | Why API GW was removed from primary path |
+| `/nginx/*` | CloudFront → ALB → EC2 ASG (NGINX) | Pattern 1: NGINX/EC2 |
+| `/lambda/*` | CloudFront → ALB → Lambda (cells) | Pattern 2: Serverless |
+| `/apigw/*` | CloudFront → API Gateway → Lambda | Pattern 3: API Gateway |
 
 ## Key Features Demonstrated
 
@@ -61,7 +61,7 @@ npx ts-node src/load-test.ts --endpoint https://$ENDPOINT --rps 50 --duration 60
 
 | Phase | Scenario | What it proves |
 |-------|----------|----------------|
-| 1 | Normal baseline | Steady-state works (35% player, 55% S2S, 10% admin) |
+| 1 | Normal baseline | Steady-state works (35% player, 55% Game Servers, 10% admin) |
 | 2 | Server outage | Traffic drop handled |
 | 3 | Reconnection storm | 85% player burst passes through WAF |
 | 4 | DDoS mixed with storm | Attack traffic blocked, players unaffected |

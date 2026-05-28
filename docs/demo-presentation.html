@@ -97,7 +97,7 @@
                          │                                                              │
                          └─────────────────────────────────────────────────────────────┘
 
-   S2S Traffic (55%) ───▶  VPC PrivateLink ──▶ ALB ──▶ NGINX (same backend)
+   Game Server Traffic (55%) ───▶  VPC PrivateLink ──▶ ALB ──▶ NGINX (same backend)
 
    Admin/Ops (10%) ─────▶  Same path with X-Traffic-Type: admin header
 
@@ -110,7 +110,7 @@
     <table>
         <tr><th>Traffic Type</th><th>Percentage</th><th>Path</th><th>Edge Protection</th></tr>
         <tr><td>Player Traffic</td><td><strong>35%</strong></td><td>CloudFront → WAF → ALB → NGINX</td><td>High rate limit (game client headers present)</td></tr>
-        <tr><td>S2S (System-to-System)</td><td><strong>55%</strong></td><td>VPC PrivateLink → ALB → NGINX</td><td>Network isolation + WAF visibility rules</td></tr>
+        <tr><td>Game Servers</td><td><strong>55%</strong></td><td>VPC PrivateLink → ALB → NGINX</td><td>Network isolation + WAF visibility rules</td></tr>
         <tr><td>Admin/Operations</td><td><strong>10%</strong></td><td>CloudFront → WAF → ALB → NGINX</td><td>Strict rate limits + traffic-type header</td></tr>
     </table>
 </div>
@@ -167,11 +167,11 @@
 
     <div class="phase-card">
         <h4>⚠️ Phase 2: Server Outage — Traffic Drop (5s)</h4>
-        <p>Game servers go down. Players disconnect. S2S traffic spikes with error notifications.</p>
+        <p>Game servers go down. Players disconnect. Game server traffic spikes with error notifications.</p>
         <table>
             <tr><th>Metric</th><th>Value</th></tr>
             <tr><td>Requests</td><td>25</td></tr>
-            <tr><td>Blocked</td><td>25 (S2S without game headers)</td></tr>
+            <tr><td>Blocked</td><td>25 (Game servers without game headers)</td></tr>
             <tr><td>Avg Latency</td><td>29ms</td></tr>
             <tr><td>Peak RPS</td><td>5</td></tr>
         </table>
@@ -313,7 +313,7 @@
         <tr><td>5</td><td>Per-Client Rate Limit</td><td>Global per-IP safety net</td><td>100K/5min</td><td><span class="badge badge-danger">Block</span></td></tr>
         <tr><td>51</td><td>JA4 Fingerprint Rate Limit</td><td>Rate limit per TLS fingerprint</td><td>50K/5min</td><td><span class="badge badge-danger">Block</span></td></tr>
         <tr><td>52</td><td>JA4 + IP Combined</td><td>Rate limit per fingerprint+IP pair</td><td>5K/5min</td><td><span class="badge badge-warning">Count</span></td></tr>
-        <tr><td>6</td><td>S2S Traffic Visibility</td><td>Match <code>X-Traffic-Type: s2s</code></td><td>—</td><td><span class="badge badge-info">Count</span></td></tr>
+        <tr><td>6</td><td>Game Server Traffic Visibility</td><td>Match <code>X-Traffic-Type: s2s</code></td><td>—</td><td><span class="badge badge-info">Count</span></td></tr>
         <tr><td>7</td><td>Admin Traffic Visibility</td><td>Match <code>X-Traffic-Type: admin</code></td><td>—</td><td><span class="badge badge-info">Count</span></td></tr>
         <tr><td>8</td><td>Geo Restriction</td><td>CN, RU country codes</td><td>—</td><td><span class="badge badge-warning">Count</span></td></tr>
         <tr><td>9</td><td>Bot Control</td><td>AWS Managed Bot Detection</td><td>—</td><td><span class="badge badge-warning">Count*</span></td></tr>

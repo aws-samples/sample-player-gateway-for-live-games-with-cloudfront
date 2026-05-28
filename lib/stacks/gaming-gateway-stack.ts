@@ -52,7 +52,7 @@ export interface GamingGatewayStackProps extends cdk.StackProps {
  *
  * Traffic distribution:
  * - Player-facing (35%): CloudFront edge with WAF protection
- * - S2S (45%): PrivateLink via Network stack
+ * - Game Servers (45%): PrivateLink via Network stack
  * - Admin/Internal (20%): Private API Gateway (separate construct)
  *
  * Key features:
@@ -365,9 +365,9 @@ export class GamingGatewayStack extends cdk.Stack {
             },
           },
           // --- TRAFFIC SHAPING: S2S/Admin traffic (55%) ---
-          // Count S2S traffic for visibility (not blocked - trusted via PrivateLink)
+          // Count Game server traffic for visibility (not blocked - trusted via PrivateLink)
           {
-            name: 'S2STrafficVisibility',
+            name: 'GameServerTrafficVisibility',
             priority: 6,
             action: { count: {} },
             statement: {
@@ -380,7 +380,7 @@ export class GamingGatewayStack extends cdk.Stack {
             },
             visibilityConfig: {
               cloudWatchMetricsEnabled: true,
-              metricName: 'S2STraffic',
+              metricName: 'GameServerTraffic',
               sampledRequestsEnabled: true,
             },
           },

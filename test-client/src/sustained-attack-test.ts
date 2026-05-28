@@ -5,7 +5,7 @@
  * WAF and CloudWatch dashboards with rich time-series data.
  *
  * Scenario rotation (repeats every 12 minutes):
- *   0-3 min:  Normal steady-state (35% player, 55% S2S, 10% admin) @ 30 RPS
+ *   0-3 min:  Normal steady-state (35% player, 55% Game Servers, 10% admin) @ 30 RPS
  *   3-5 min:  Attack wave (SQLi, XSS, SSRF, Log4j, bots) @ 50 RPS
  *   5-8 min:  Reconnection storm (85% player burst) @ 80 RPS
  *   8-10 min: DDoS mixed with legitimate @ 60 RPS
