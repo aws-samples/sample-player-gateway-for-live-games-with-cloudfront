@@ -354,16 +354,15 @@
                 <tr><td><strong>Total (on-demand)</strong></td><td><strong>~$23,180/mo</strong></td></tr>
             </table>
             <p style="margin-top: 1rem; padding: 0.75rem; background: #fff3e0; border-radius: 6px; border-left: 4px solid #FF9900;">
-                <strong>⚠️ Prerequisite:</strong> Negotiate CloudFront Private Pricing and WAF volume discounts <strong>before</strong> routing live traffic to the PoC. At this volume, discounts of 30-50% are typical with commitment.
             </p>
         </div>
     </div>
 
     <h3>Full Production Scale (475K RPS — Future State)</h3>
-    <p><strong>~1.23 trillion requests/month</strong> — requires Private Pricing Agreement (PPA)</p>
+    <p><strong>~1.23 trillion requests/month</strong></p>
     <table>
         <tr><th>Component</th><th>On-Demand (reference only)</th><th>Notes</th></tr>
-        <tr><td>CloudFront</td><td>~$123,000/mo</td><td>PPA required — commitment-based discount</td></tr>
+        <tr><td>CloudFront</td><td>~$123,000/mo</td><td>Volume discount available</td></tr>
         <tr><td>WAF</td><td>~$738,000/mo</td><td>Volume tiers + commitment discount needed</td></tr>
         <tr><td>Shield Advanced</td><td>$3,000/mo (fixed)</td><td>Includes DDoS cost protection credits</td></tr>
         <tr><td>Compute (Lambda or EC2)</td><td>Varies by path</td><td>Savings Plans / RIs available</td></tr>
@@ -372,7 +371,6 @@
     <div class="highlight-box">
         <strong>Recommended Approach:</strong>
         <ol style="margin-top: 0.5rem; padding-left: 1.5rem;">
-            <li>Negotiate CloudFront PPA + WAF volume pricing with AWS account team</li>
             <li>Route 1% of traffic (or one small title) to the PoC to validate at real scale</li>
             <li>Measure actual costs against the discounted rates</li>
             <li>Decision point: expand to full production or adjust architecture</li>
@@ -426,7 +424,6 @@
                 <li>Switch WAF managed rules from Count → Enforce</li>
                 <li>Add TLS certificate + custom domain to CloudFront</li>
                 <li>Enable Provisioned Concurrency for Lambda (eliminates cold starts)</li>
-                <li>Configure CloudFront Private Pricing (commitment discount)</li>
                 <li>Build JA4 fingerprint allowlist from known game client SDKs</li>
                 <li>Integrate with existing JWT auth (passthrough)</li>
             </ul>

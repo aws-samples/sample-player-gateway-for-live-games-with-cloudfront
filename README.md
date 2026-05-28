@@ -135,9 +135,8 @@ WAF and Shield consoles are accessible from the AWS Console under WAF & Shield (
 |----------|---------|
 | PoC (no live traffic) | ~$212 |
 | PoC + Shield Advanced | ~$3,212 |
-| PoC with 1% live traffic (4,750 RPS) | ~$23K (on-demand, needs PPA) |
+| PoC with 1% live traffic (4,750 RPS) | ~$23K (on-demand) |
 
-**Prerequisite for live traffic:** Negotiate CloudFront Private Pricing + WAF volume discounts before scaling.
 
 ## Account
 
