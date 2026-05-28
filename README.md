@@ -8,6 +8,8 @@ CloudFront + WAF + Shield Advanced in front of NGINX/EC2, with a 3-way architect
 
 A CDK-deployed proof-of-concept demonstrating edge security for a gaming studio's player gateway. The PoC adds a managed edge layer (CloudFront, WAF, Shield Advanced) in front of the existing NGINX/EC2 backend without modifying it.
 
+![Architecture](docs/architecture.png)
+
 **Three architecture paths deployed behind the same CloudFront distribution:**
 
 | Path | Architecture | Purpose |
