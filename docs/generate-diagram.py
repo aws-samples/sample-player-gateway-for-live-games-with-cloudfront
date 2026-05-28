@@ -25,9 +25,9 @@ with Diagram(
     outformat="png",
 ):
     # Clients
-    players = Users("Game Clients\n(35% traffic)")
-    s2s = Client("Game Servers\n(55% traffic)")
-    admin = Client("Admin/Ops\n(10% traffic)")
+    players = Users("Game Clients")
+    s2s = Client("Game Servers")
+    admin = Client("Admin/Ops")
 
     with Cluster("Edge Layer (CloudFront + WAF + Shield)"):
         cf = CloudFront("CloudFront\n(Anycast IPs)")
