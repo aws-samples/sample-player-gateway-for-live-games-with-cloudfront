@@ -1,4 +1,4 @@
-# 🎮 Gateway Revamp — Edge Security & DDoS Protection PoC
+# 🎮 Player Gateway — Edge Security & DDoS Protection demo
 
 > **⚠️ Important:** This is a sample project for demonstration purposes. It should be thoroughly tested, secured, and optimized according to your organization's security standards before deploying to production.
 
