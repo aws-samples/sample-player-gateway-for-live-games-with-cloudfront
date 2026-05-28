@@ -8,6 +8,20 @@ CloudFront + WAF + Shield Advanced in front of NGINX/EC2, with a 3-way architect
 
 A CDK-deployed proof-of-concept demonstrating edge security for a gaming studio's player gateway. The PoC adds a managed edge layer (CloudFront, WAF, Shield Advanced) in front of the existing NGINX/EC2 backend without modifying it.
 
+## Why These Patterns Matter
+
+Live games face a unique challenge: player gateways must handle massive, unpredictable traffic spikes (game launches, server outages causing reconnection storms, seasonal events) while staying protected against DDoS attacks that look identical to legitimate bursts. Traditional approaches force a tradeoff — either over-provision infrastructure for peak load (expensive) or risk blocking real players during traffic spikes (false positives).
+
+These three patterns solve this by placing a managed edge security layer (CloudFront + WAF + Shield Advanced) in front of the compute layer. The edge handles DDoS mitigation, rate limiting, and bot detection using signals like game client headers and JA4 TLS fingerprints — allowing the backend to focus purely on game logic regardless of which compute pattern is chosen.
+
+Each pattern represents a different operational and cost tradeoff:
+
+- **Pattern 1** keeps existing infrastructure intact — add edge security without re-architecting
+- **Pattern 2** eliminates operational overhead — no servers to patch, instant scaling for bursts
+- **Pattern 3** adds managed API features — throttling, auth, validation for internal/admin APIs
+
+The blueprint deploys all three side-by-side so teams can compare latency, cost, and operational complexity with real traffic before committing to a migration path.
+
 ## Patterns
 
 This blueprint deploys three architecture patterns behind the same CloudFront + WAF + Shield Advanced edge layer, allowing side-by-side comparison.
@@ -44,7 +58,7 @@ Fully managed API layer using API Gateway HTTP API in front of Lambda. API Gatew
 
 - **DDoS Protection**: WAF rate limiting scoped by `X-Game-Id` header — blocks attackers without blocking players
 - **JA4 TLS Fingerprinting**: Detects botnets sharing the same TLS stack across distributed IPs
-- **Reconnection Storm Handling**: 182K+ player reconnections pass through while DDoS is blocked
+- **Reconnection Storm Handling**: 100k+ player reconnections pass through while DDoS is blocked
 - **Shield Advanced**: Route53 health checks for proactive DRT engagement
 - **Cell-based Architecture**: Blast radius isolation with canary deployments
 - **Live Rate-Limit Demo**: Shows blocking in real-time, then proves game clients bypass it
