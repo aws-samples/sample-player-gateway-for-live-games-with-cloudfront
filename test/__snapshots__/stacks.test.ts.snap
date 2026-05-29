@@ -1,0 +1,4994 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CDK Stacks Comparison stack snapshot 1`] = `
+{
+  "Outputs": {
+    "ApiGwDirectUrl": {
+      "Description": "API Gateway HTTP API direct endpoint",
+      "Value": {
+        "Fn::GetAtt": [
+          "GatewayHttpApiC7CA5516",
+          "ApiEndpoint",
+        ],
+      },
+    },
+    "ApiGwPathUrl": {
+      "Description": "Direct API Gateway path URL",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://",
+            {
+              "Fn::GetAtt": [
+                "ComparisonDistributionDA886037",
+                "DomainName",
+              ],
+            },
+            "/apigw/health",
+          ],
+        ],
+      },
+    },
+    "ComparisonDashboardUrl": {
+      "Description": "Comparison Dashboard URL",
+      "Value": "https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#dashboards:name=GamingGateway-Comparison-LambdaVsNginx",
+    },
+    "ComparisonDistributionDomain": {
+      "Description": "Comparison CloudFront distribution domain",
+      "Value": {
+        "Fn::GetAtt": [
+          "ComparisonDistributionDA886037",
+          "DomainName",
+        ],
+      },
+    },
+    "LambdaPathUrl": {
+      "Description": "Direct Lambda path URL",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://",
+            {
+              "Fn::GetAtt": [
+                "ComparisonDistributionDA886037",
+                "DomainName",
+              ],
+            },
+            "/lambda/health",
+          ],
+        ],
+      },
+    },
+    "NginxBaselineNginxAlbDns69D30B8E": {
+      "Description": "NGINX Baseline ALB DNS name",
+      "Value": {
+        "Fn::GetAtt": [
+          "NginxBaselineNginxAlbF1D1EDAB",
+          "DNSName",
+        ],
+      },
+    },
+    "NginxPathUrl": {
+      "Description": "Direct NGINX path URL",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://",
+            {
+              "Fn::GetAtt": [
+                "ComparisonDistributionDA886037",
+                "DomainName",
+              ],
+            },
+            "/nginx/health",
+          ],
+        ],
+      },
+    },
+    "TrafficSplit": {
+      "Description": "Traffic weight configuration",
+      "Value": "Lambda: 50% | NGINX: 50% (default path uses Lambda primary with NGINX failover)",
+    },
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61x8664C96584B6F00A464EAD1953AFF4B05118Parameter": {
+      "Default": "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64",
+      "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+    },
+  },
+  "Resources": {
+    "ApiGwLogGroupA37B636E": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "RetentionInDays": 14,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "ComparisonDashboard6352774C": {
+      "Properties": {
+        "DashboardBody": {
+          "Fn::Join": [
+            "",
+            [
+              "{"periodOverride":"auto","widgets":[{"type":"text","width":24,"height":5,"x":0,"y":0,"properties":{"markdown":"# 🎮 Gaming Gateway - 3-Way Architecture Comparison\\n## NGINX (EC2) vs CloudFront+ALB+Lambda vs CloudFront+API Gateway+Lambda\\n---\\n| Path | Route | Backend | Cost Model |\\n|------|-------|---------|------------|\\n| \`/nginx/*\` | CloudFront → NGINX ALB → EC2 ASG | NGINX | EC2 hourly |\\n| \`/lambda/*\` | CloudFront → Lambda ALB → Lambda | Lambda Cells | Pay-per-request |\\n| \`/apigw/*\` | CloudFront → API Gateway → Lambda | API GW + Lambda | $1/M req + Lambda |\\n\\n> Send identical traffic to each path for fair comparison."}},{"type":"text","width":24,"height":1,"x":0,"y":5,"properties":{"markdown":"## ⏱️ Latency Comparison"}},{"type":"metric","width":12,"height":6,"x":0,"y":6,"properties":{"view":"timeSeries","title":"Response Time - Average (ms)","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/ApplicationELB","TargetResponseTime","LoadBalancer","",
+              {
+                "Fn::Select": [
+                  1,
+                  {
+                    "Fn::Split": [
+                      "loadbalancer/",
+                      {
+                        "Fn::ImportValue": "TestCore:ExportsOutputRefGatewayAlb5D7963AAB94C1524",
+                      },
+                    ],
+                  },
+                ],
+              },
+              "",{"label":"Lambda Path (avg)","period":60}],["AWS/ApplicationELB","TargetResponseTime","LoadBalancer","",
+              {
+                "Fn::GetAtt": [
+                  "NginxBaselineNginxAlbF1D1EDAB",
+                  "LoadBalancerFullName",
+                ],
+              },
+              "",{"label":"NGINX Path (avg)","period":60}],["AWS/ApiGateway","Latency","ApiId","",
+              {
+                "Ref": "GatewayHttpApiC7CA5516",
+              },
+              "",{"label":"API GW Path (avg)","period":60}]],"yAxis":{"left":{"label":"Milliseconds","min":0}}}},{"type":"metric","width":12,"height":6,"x":12,"y":6,"properties":{"view":"timeSeries","title":"Response Time - P99 (ms)","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/ApplicationELB","TargetResponseTime","LoadBalancer","",
+              {
+                "Fn::Select": [
+                  1,
+                  {
+                    "Fn::Split": [
+                      "loadbalancer/",
+                      {
+                        "Fn::ImportValue": "TestCore:ExportsOutputRefGatewayAlb5D7963AAB94C1524",
+                      },
+                    ],
+                  },
+                ],
+              },
+              "",{"label":"Lambda Path (p99)","period":60,"stat":"p99"}],["AWS/ApplicationELB","TargetResponseTime","LoadBalancer","",
+              {
+                "Fn::GetAtt": [
+                  "NginxBaselineNginxAlbF1D1EDAB",
+                  "LoadBalancerFullName",
+                ],
+              },
+              "",{"label":"NGINX Path (p99)","period":60,"stat":"p99"}],["AWS/ApiGateway","Latency","ApiId","",
+              {
+                "Ref": "GatewayHttpApiC7CA5516",
+              },
+              "",{"label":"API GW Path (p99)","period":60,"stat":"p99"}]],"annotations":{"horizontal":[{"value":5,"label":"SLA Target (5s)","color":"#ff0000","yAxis":"left"}]},"yAxis":{"left":{"label":"Milliseconds","min":0}}}},{"type":"text","width":24,"height":1,"x":0,"y":12,"properties":{"markdown":"## 📊 Throughput & Request Volume"}},{"type":"metric","width":12,"height":6,"x":0,"y":13,"properties":{"view":"timeSeries","title":"Request Count (per minute)","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/ApplicationELB","RequestCount","LoadBalancer","",
+              {
+                "Fn::Select": [
+                  1,
+                  {
+                    "Fn::Split": [
+                      "loadbalancer/",
+                      {
+                        "Fn::ImportValue": "TestCore:ExportsOutputRefGatewayAlb5D7963AAB94C1524",
+                      },
+                    ],
+                  },
+                ],
+              },
+              "",{"label":"Lambda Path","period":60,"stat":"Sum"}],["AWS/ApplicationELB","RequestCount","LoadBalancer","",
+              {
+                "Fn::GetAtt": [
+                  "NginxBaselineNginxAlbF1D1EDAB",
+                  "LoadBalancerFullName",
+                ],
+              },
+              "",{"label":"NGINX Path","period":60,"stat":"Sum"}],["AWS/ApiGateway","Count","ApiId","",
+              {
+                "Ref": "GatewayHttpApiC7CA5516",
+              },
+              "",{"label":"API GW Path","period":60,"stat":"Sum"}]],"yAxis":{}}},{"type":"metric","width":12,"height":6,"x":12,"y":13,"properties":{"view":"timeSeries","title":"Success Rate (2xx responses)","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/ApplicationELB","HTTPCode_Target_2XX_Count","LoadBalancer","",
+              {
+                "Fn::Select": [
+                  1,
+                  {
+                    "Fn::Split": [
+                      "loadbalancer/",
+                      {
+                        "Fn::ImportValue": "TestCore:ExportsOutputRefGatewayAlb5D7963AAB94C1524",
+                      },
+                    ],
+                  },
+                ],
+              },
+              "",{"label":"Lambda 2xx","period":60,"stat":"Sum"}],["AWS/ApplicationELB","HTTPCode_Target_2XX_Count","LoadBalancer","",
+              {
+                "Fn::GetAtt": [
+                  "NginxBaselineNginxAlbF1D1EDAB",
+                  "LoadBalancerFullName",
+                ],
+              },
+              "",{"label":"NGINX 2xx","period":60,"stat":"Sum"}]],"yAxis":{}}},{"type":"text","width":24,"height":1,"x":0,"y":19,"properties":{"markdown":"## ❌ Error Rates"}},{"type":"metric","width":12,"height":6,"x":0,"y":20,"properties":{"view":"timeSeries","title":"Server Errors (5xx)","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/ApplicationELB","HTTPCode_Target_5XX_Count","LoadBalancer","",
+              {
+                "Fn::Select": [
+                  1,
+                  {
+                    "Fn::Split": [
+                      "loadbalancer/",
+                      {
+                        "Fn::ImportValue": "TestCore:ExportsOutputRefGatewayAlb5D7963AAB94C1524",
+                      },
+                    ],
+                  },
+                ],
+              },
+              "",{"label":"Lambda 5xx","period":60,"stat":"Sum"}],["AWS/ApplicationELB","HTTPCode_Target_5XX_Count","LoadBalancer","",
+              {
+                "Fn::GetAtt": [
+                  "NginxBaselineNginxAlbF1D1EDAB",
+                  "LoadBalancerFullName",
+                ],
+              },
+              "",{"label":"NGINX 5xx","period":60,"stat":"Sum"}],["AWS/ApiGateway","5xx","ApiId","",
+              {
+                "Ref": "GatewayHttpApiC7CA5516",
+              },
+              "",{"label":"API GW 5xx","period":60,"stat":"Sum"}]],"yAxis":{"left":{"min":0}}}},{"type":"metric","width":12,"height":6,"x":12,"y":20,"properties":{"view":"timeSeries","title":"Lambda Errors & Throttles","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/Lambda","Errors","FunctionName","",
+              {
+                "Fn::ImportValue": "TestCore:ExportsOutputRefRouterFunction6AC6EF3B8D7EA886",
+              },
+              "",{"label":"Lambda Errors","period":60,"stat":"Sum"}],["AWS/Lambda","Throttles","FunctionName","",
+              {
+                "Fn::ImportValue": "TestCore:ExportsOutputRefRouterFunction6AC6EF3B8D7EA886",
+              },
+              "",{"label":"Lambda Throttles","period":60,"stat":"Sum","yAxis":"right"}]],"yAxis":{}}},{"type":"text","width":24,"height":1,"x":0,"y":26,"properties":{"markdown":"## 🖥️ Compute & Scaling"}},{"type":"metric","width":12,"height":6,"x":0,"y":27,"properties":{"view":"timeSeries","title":"Lambda - Concurrency & Duration","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/Lambda","ConcurrentExecutions","FunctionName","",
+              {
+                "Fn::ImportValue": "TestCore:ExportsOutputRefRouterFunction6AC6EF3B8D7EA886",
+              },
+              "",{"label":"Lambda Concurrency","period":60,"stat":"Maximum"}],["AWS/Lambda","Duration","FunctionName","",
+              {
+                "Fn::ImportValue": "TestCore:ExportsOutputRefRouterFunction6AC6EF3B8D7EA886",
+              },
+              "",{"label":"Lambda Duration (avg)","period":60,"yAxis":"right"}],["AWS/Lambda","Duration","FunctionName","",
+              {
+                "Fn::ImportValue": "TestCore:ExportsOutputRefRouterFunction6AC6EF3B8D7EA886",
+              },
+              "",{"label":"Lambda Duration (p99)","period":60,"stat":"p99","yAxis":"right"}]],"yAxis":{"left":{"label":"Concurrent Executions"},"right":{"label":"Duration (ms)"}}}},{"type":"metric","width":12,"height":6,"x":12,"y":27,"properties":{"view":"timeSeries","title":"NGINX - CPU & Instance Count","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/EC2","CPUUtilization","AutoScalingGroupName","",
+              {
+                "Ref": "NginxBaselineNginxAsgASG6663CD33",
+              },
+              "",{"label":"NGINX CPU %","period":60}],["AWS/AutoScaling","GroupInServiceInstances","AutoScalingGroupName","",
+              {
+                "Ref": "NginxBaselineNginxAsgASG6663CD33",
+              },
+              "",{"label":"NGINX Instances","period":60,"yAxis":"right"}]],"annotations":{"horizontal":[{"value":60,"label":"Scale-out threshold","color":"#ff9900","yAxis":"left"}]},"yAxis":{"left":{"label":"CPU %","max":100},"right":{"label":"Instances"}}}},{"type":"text","width":24,"height":1,"x":0,"y":33,"properties":{"markdown":"## 🌐 Network & Infrastructure"}},{"type":"metric","width":12,"height":6,"x":0,"y":34,"properties":{"view":"timeSeries","title":"NGINX - Network I/O (bytes)","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/EC2","NetworkIn","AutoScalingGroupName","",
+              {
+                "Ref": "NginxBaselineNginxAsgASG6663CD33",
+              },
+              "",{"label":"NGINX Network In","period":60,"stat":"Sum"}],["AWS/EC2","NetworkOut","AutoScalingGroupName","",
+              {
+                "Ref": "NginxBaselineNginxAsgASG6663CD33",
+              },
+              "",{"label":"NGINX Network Out","period":60,"stat":"Sum"}]],"yAxis":{}}},{"type":"metric","width":12,"height":6,"x":12,"y":34,"properties":{"view":"timeSeries","title":"NGINX - Healthy Hosts & Scaling","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/ApplicationELB","HealthyHostCount","LoadBalancer","",
+              {
+                "Fn::GetAtt": [
+                  "NginxBaselineNginxAlbF1D1EDAB",
+                  "LoadBalancerFullName",
+                ],
+              },
+              "","TargetGroup","",
+              {
+                "Fn::GetAtt": [
+                  "NginxBaselineNginxTgEE50BCF3",
+                  "TargetGroupFullName",
+                ],
+              },
+              "",{"label":"NGINX Healthy Hosts","period":60}],["AWS/AutoScaling","GroupInServiceInstances","AutoScalingGroupName","",
+              {
+                "Ref": "NginxBaselineNginxAsgASG6663CD33",
+              },
+              "",{"label":"NGINX Instances","period":60}]],"yAxis":{}}},{"type":"text","width":24,"height":6,"x":0,"y":40,"properties":{"markdown":"## 💰 Cost Indicators\\n\\n| Metric | Lambda Path | NGINX Path |\\n|--------|-------------|------------|\\n| Compute | Pay-per-request (invocations × duration) | EC2 instances (hourly, always-on) |\\n| Scaling | Instant (concurrent executions) | Minutes (ASG warm-up) |\\n| Baseline Cost | $0 when idle | Min instances × hourly rate |\\n| ALB | Shared (existing) | Dedicated ALB |\\n\\n> **Tip**: Use the request count and instance count metrics above to estimate cost.\\n> Lambda: ~$0.20/1M requests + $0.0000166667/GB-s compute.\\n> EC2 t3.medium: ~$0.0416/hr × instance count."}},{"type":"text","width":24,"height":1,"x":0,"y":46,"properties":{"markdown":"## 📈 Current State"}},{"type":"metric","width":4,"height":4,"x":0,"y":47,"properties":{"view":"singleValue","title":"Lambda Avg Latency (ms)","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/ApplicationELB","TargetResponseTime","LoadBalancer","",
+              {
+                "Fn::Select": [
+                  1,
+                  {
+                    "Fn::Split": [
+                      "loadbalancer/",
+                      {
+                        "Fn::ImportValue": "TestCore:ExportsOutputRefGatewayAlb5D7963AAB94C1524",
+                      },
+                    ],
+                  },
+                ],
+              },
+              "",{"label":"Lambda Path (avg)","period":60}]]}},{"type":"metric","width":4,"height":4,"x":4,"y":47,"properties":{"view":"singleValue","title":"NGINX Avg Latency (ms)","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/ApplicationELB","TargetResponseTime","LoadBalancer","",
+              {
+                "Fn::GetAtt": [
+                  "NginxBaselineNginxAlbF1D1EDAB",
+                  "LoadBalancerFullName",
+                ],
+              },
+              "",{"label":"NGINX Path (avg)","period":60}]]}},{"type":"metric","width":4,"height":4,"x":8,"y":47,"properties":{"view":"singleValue","title":"Lambda Requests/min","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/ApplicationELB","RequestCount","LoadBalancer","",
+              {
+                "Fn::Select": [
+                  1,
+                  {
+                    "Fn::Split": [
+                      "loadbalancer/",
+                      {
+                        "Fn::ImportValue": "TestCore:ExportsOutputRefGatewayAlb5D7963AAB94C1524",
+                      },
+                    ],
+                  },
+                ],
+              },
+              "",{"label":"Lambda Path","period":60,"stat":"Sum"}]]}},{"type":"metric","width":4,"height":4,"x":12,"y":47,"properties":{"view":"singleValue","title":"NGINX Requests/min","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/ApplicationELB","RequestCount","LoadBalancer","",
+              {
+                "Fn::GetAtt": [
+                  "NginxBaselineNginxAlbF1D1EDAB",
+                  "LoadBalancerFullName",
+                ],
+              },
+              "",{"label":"NGINX Path","period":60,"stat":"Sum"}]]}},{"type":"metric","width":4,"height":4,"x":16,"y":47,"properties":{"view":"singleValue","title":"Lambda Concurrency","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/Lambda","ConcurrentExecutions","FunctionName","",
+              {
+                "Fn::ImportValue": "TestCore:ExportsOutputRefRouterFunction6AC6EF3B8D7EA886",
+              },
+              "",{"label":"Lambda Concurrency","period":60,"stat":"Maximum"}]]}},{"type":"metric","width":4,"height":4,"x":20,"y":47,"properties":{"view":"singleValue","title":"NGINX Instances","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/AutoScaling","GroupInServiceInstances","AutoScalingGroupName","",
+              {
+                "Ref": "NginxBaselineNginxAsgASG6663CD33",
+              },
+              "",{"label":"NGINX Instances","period":60}]]}}]}",
+            ],
+          ],
+        },
+        "DashboardName": "GamingGateway-Comparison-LambdaVsNginx",
+      },
+      "Type": "AWS::CloudWatch::Dashboard",
+    },
+    "ComparisonDistributionDA886037": {
+      "Properties": {
+        "DistributionConfig": {
+          "CacheBehaviors": [
+            {
+              "AllowedMethods": [
+                "GET",
+                "HEAD",
+                "OPTIONS",
+                "PUT",
+                "PATCH",
+                "POST",
+                "DELETE",
+              ],
+              "CachePolicyId": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
+              "Compress": true,
+              "OriginRequestPolicyId": "b689b0a8-53d0-40ab-baf2-68738e2966ac",
+              "PathPattern": "/lambda/*",
+              "TargetOriginId": "TestComparisonComparisonDistributionOrigin30A6979D4",
+              "ViewerProtocolPolicy": "https-only",
+            },
+            {
+              "AllowedMethods": [
+                "GET",
+                "HEAD",
+                "OPTIONS",
+                "PUT",
+                "PATCH",
+                "POST",
+                "DELETE",
+              ],
+              "CachePolicyId": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
+              "Compress": true,
+              "OriginRequestPolicyId": "b689b0a8-53d0-40ab-baf2-68738e2966ac",
+              "PathPattern": "/nginx/*",
+              "TargetOriginId": "TestComparisonComparisonDistributionOrigin2A0B3762C",
+              "ViewerProtocolPolicy": "https-only",
+            },
+            {
+              "AllowedMethods": [
+                "GET",
+                "HEAD",
+                "OPTIONS",
+                "PUT",
+                "PATCH",
+                "POST",
+                "DELETE",
+              ],
+              "CachePolicyId": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
+              "Compress": true,
+              "OriginRequestPolicyId": "b689b0a8-53d0-40ab-baf2-68738e2966ac",
+              "PathPattern": "/apigw/*",
+              "TargetOriginId": "TestComparisonComparisonDistributionOrigin4332EAC8A",
+              "ViewerProtocolPolicy": "https-only",
+            },
+          ],
+          "Comment": "Gaming Gateway - A/B Comparison (Lambda vs NGINX)",
+          "DefaultCacheBehavior": {
+            "AllowedMethods": [
+              "GET",
+              "HEAD",
+            ],
+            "CachePolicyId": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
+            "Compress": true,
+            "OriginRequestPolicyId": "b689b0a8-53d0-40ab-baf2-68738e2966ac",
+            "ResponseHeadersPolicyId": "67f7725c-6f97-4210-82d7-5512b31e9d03",
+            "TargetOriginId": "TestComparisonComparisonDistributionOriginGroup1E84D2063",
+            "ViewerProtocolPolicy": "https-only",
+          },
+          "Enabled": true,
+          "HttpVersion": "http2and3",
+          "IPV6Enabled": true,
+          "Logging": {
+            "Bucket": {
+              "Fn::GetAtt": [
+                "ComparisonLogsBucketB311C065",
+                "RegionalDomainName",
+              ],
+            },
+            "Prefix": "comparison-cf-logs/",
+          },
+          "OriginGroups": {
+            "Items": [
+              {
+                "FailoverCriteria": {
+                  "StatusCodes": {
+                    "Items": [
+                      500,
+                      502,
+                      503,
+                      504,
+                    ],
+                    "Quantity": 4,
+                  },
+                },
+                "Id": "TestComparisonComparisonDistributionOriginGroup1E84D2063",
+                "Members": {
+                  "Items": [
+                    {
+                      "OriginId": "TestComparisonComparisonDistributionOrigin17C6FC549",
+                    },
+                    {
+                      "OriginId": "TestComparisonComparisonDistributionOrigin2A0B3762C",
+                    },
+                  ],
+                  "Quantity": 2,
+                },
+              },
+            ],
+            "Quantity": 1,
+          },
+          "Origins": [
+            {
+              "ConnectionAttempts": 3,
+              "ConnectionTimeout": 10,
+              "CustomOriginConfig": {
+                "OriginKeepaliveTimeout": 60,
+                "OriginProtocolPolicy": "http-only",
+                "OriginReadTimeout": 30,
+                "OriginSSLProtocols": [
+                  "TLSv1.2",
+                ],
+              },
+              "DomainName": {
+                "Fn::ImportValue": "TestCore:ExportsOutputFnGetAttGatewayAlb5D7963AADNSName9B0A18F9",
+              },
+              "Id": "TestComparisonComparisonDistributionOrigin17C6FC549",
+              "OriginCustomHeaders": [
+                {
+                  "HeaderName": "X-Origin-Path",
+                  "HeaderValue": "lambda",
+                },
+              ],
+            },
+            {
+              "ConnectionAttempts": 3,
+              "ConnectionTimeout": 10,
+              "CustomOriginConfig": {
+                "OriginKeepaliveTimeout": 60,
+                "OriginProtocolPolicy": "http-only",
+                "OriginReadTimeout": 30,
+                "OriginSSLProtocols": [
+                  "TLSv1.2",
+                ],
+              },
+              "DomainName": {
+                "Fn::GetAtt": [
+                  "NginxBaselineNginxAlbF1D1EDAB",
+                  "DNSName",
+                ],
+              },
+              "Id": "TestComparisonComparisonDistributionOrigin2A0B3762C",
+              "OriginCustomHeaders": [
+                {
+                  "HeaderName": "X-Origin-Path",
+                  "HeaderValue": "nginx",
+                },
+              ],
+            },
+            {
+              "ConnectionAttempts": 3,
+              "ConnectionTimeout": 10,
+              "CustomOriginConfig": {
+                "OriginKeepaliveTimeout": 60,
+                "OriginProtocolPolicy": "http-only",
+                "OriginReadTimeout": 30,
+                "OriginSSLProtocols": [
+                  "TLSv1.2",
+                ],
+              },
+              "DomainName": {
+                "Fn::ImportValue": "TestCore:ExportsOutputFnGetAttGatewayAlb5D7963AADNSName9B0A18F9",
+              },
+              "Id": "TestComparisonComparisonDistributionOrigin30A6979D4",
+              "OriginCustomHeaders": [
+                {
+                  "HeaderName": "X-Origin-Path",
+                  "HeaderValue": "lambda",
+                },
+              ],
+            },
+            {
+              "ConnectionAttempts": 3,
+              "ConnectionTimeout": 10,
+              "CustomOriginConfig": {
+                "OriginProtocolPolicy": "https-only",
+                "OriginReadTimeout": 30,
+                "OriginSSLProtocols": [
+                  "TLSv1.2",
+                ],
+              },
+              "DomainName": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Ref": "GatewayHttpApiC7CA5516",
+                    },
+                    ".execute-api.us-east-1.amazonaws.com",
+                  ],
+                ],
+              },
+              "Id": "TestComparisonComparisonDistributionOrigin4332EAC8A",
+              "OriginCustomHeaders": [
+                {
+                  "HeaderName": "X-Origin-Path",
+                  "HeaderValue": "apigw",
+                },
+              ],
+            },
+          ],
+          "PriceClass": "PriceClass_100",
+          "WebACLId": {
+            "Fn::ImportValue": "TestCore:ExportsOutputFnGetAttGatewayWafArn9581D75F",
+          },
+        },
+      },
+      "Type": "AWS::CloudFront::Distribution",
+    },
+    "ComparisonLogsBucketAutoDeleteObjectsCustomResource0192EC08": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "ComparisonLogsBucketPolicy962C747E",
+      ],
+      "Properties": {
+        "BucketName": {
+          "Ref": "ComparisonLogsBucketB311C065",
+        },
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::S3AutoDeleteObjects",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "ComparisonLogsBucketB311C065": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256",
+              },
+            },
+          ],
+        },
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "ExpirationInDays": 30,
+              "Status": "Enabled",
+            },
+          ],
+        },
+        "OwnershipControls": {
+          "Rules": [
+            {
+              "ObjectOwnership": "BucketOwnerPreferred",
+            },
+          ],
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": false,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": false,
+          "RestrictPublicBuckets": true,
+        },
+        "Tags": [
+          {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+        ],
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "ComparisonLogsBucketPolicy962C747E": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "ComparisonLogsBucketB311C065",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "ComparisonLogsBucketB311C065",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "ComparisonLogsBucketB311C065",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "s3:PutBucketPolicy",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::GetAtt": [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn",
+                  ],
+                },
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "ComparisonLogsBucketB311C065",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "ComparisonLogsBucketB311C065",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
+    "ComparisonShieldProtection": {
+      "Properties": {
+        "Name": "GamingGateway-Comparison-CloudFront-DDoS",
+        "ResourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:cloudfront::123456789012:distribution/",
+              {
+                "Ref": "ComparisonDistributionDA886037",
+              },
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Shield::Protection",
+    },
+    "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F": {
+      "DependsOn": [
+        "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": "cdk-hnb659fds-assets-123456789012-us-east-1",
+          "S3Key": "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6.zip",
+        },
+        "Description": {
+          "Fn::Join": [
+            "",
+            [
+              "Lambda function for auto-deleting objects in ",
+              {
+                "Ref": "ComparisonLogsBucketB311C065",
+              },
+              " S3 bucket.",
+            ],
+          ],
+        },
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "Role": {
+          "Fn::GetAtt": [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs22.x",
+        "Timeout": 900,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Sub": "arn:\${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "GatewayHttpApiANYproxy1C72F87D": {
+      "Properties": {
+        "ApiId": {
+          "Ref": "GatewayHttpApiC7CA5516",
+        },
+        "AuthorizationType": "NONE",
+        "RouteKey": "ANY /{proxy+}",
+        "Target": {
+          "Fn::Join": [
+            "",
+            [
+              "integrations/",
+              {
+                "Ref": "GatewayHttpApiANYproxyLambdaIntegration6E2ABC34",
+              },
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Route",
+    },
+    "GatewayHttpApiANYproxyLambdaIntegration6E2ABC34": {
+      "Properties": {
+        "ApiId": {
+          "Ref": "GatewayHttpApiC7CA5516",
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": {
+          "Fn::ImportValue": "TestCore:ExportsOutputFnGetAttRouterFunction6AC6EF3BArn50C3B2AB",
+        },
+        "PayloadFormatVersion": "2.0",
+      },
+      "Type": "AWS::ApiGatewayV2::Integration",
+    },
+    "GatewayHttpApiANYproxyLambdaIntegrationPermission56B19C62": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::ImportValue": "TestCore:ExportsOutputFnGetAttRouterFunction6AC6EF3BArn50C3B2AB",
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:us-east-1:123456789012:",
+              {
+                "Ref": "GatewayHttpApiC7CA5516",
+              },
+              "/*/*/{proxy+}",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "GatewayHttpApiC7CA5516": {
+      "Properties": {
+        "CorsConfiguration": {
+          "AllowHeaders": [
+            "Content-Type",
+            "Authorization",
+            "X-Game-Id",
+            "X-Platform",
+            "X-Client-Version",
+            "X-Traffic-Type",
+          ],
+          "AllowMethods": [
+            "*",
+          ],
+          "AllowOrigins": [
+            "*",
+          ],
+        },
+        "Description": "API Gateway HTTP API path for 3-way comparison (CF + APIGW + Lambda)",
+        "Name": "gaming-gateway-comparison-api",
+        "ProtocolType": "HTTP",
+      },
+      "Type": "AWS::ApiGatewayV2::Api",
+    },
+    "GatewayHttpApiDefaultStage10467279": {
+      "Properties": {
+        "ApiId": {
+          "Ref": "GatewayHttpApiC7CA5516",
+        },
+        "AutoDeploy": true,
+        "StageName": "$default",
+      },
+      "Type": "AWS::ApiGatewayV2::Stage",
+    },
+    "GatewayHttpApiGEThealth1A029980": {
+      "Properties": {
+        "ApiId": {
+          "Ref": "GatewayHttpApiC7CA5516",
+        },
+        "AuthorizationType": "NONE",
+        "RouteKey": "GET /health",
+        "Target": {
+          "Fn::Join": [
+            "",
+            [
+              "integrations/",
+              {
+                "Ref": "GatewayHttpApiANYproxyLambdaIntegration6E2ABC34",
+              },
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Route",
+    },
+    "GatewayHttpApiGEThealthLambdaIntegrationPermission6FB2823C": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::ImportValue": "TestCore:ExportsOutputFnGetAttRouterFunction6AC6EF3BArn50C3B2AB",
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:us-east-1:123456789012:",
+              {
+                "Ref": "GatewayHttpApiC7CA5516",
+              },
+              "/*/*/health",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "NginxBaselineAlbSgA4C12255": {
+      "Properties": {
+        "GroupDescription": "Security group for NGINX baseline ALB",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow HTTP from CloudFront",
+            "FromPort": 80,
+            "IpProtocol": "tcp",
+            "ToPort": 80,
+          },
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow HTTPS from CloudFront",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
+        "VpcId": {
+          "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcFA33972A0C50181D",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "NginxBaselineInstanceRole3CF18F94": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ec2.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AmazonSSMManagedInstanceCore",
+              ],
+            ],
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/CloudWatchAgentServerPolicy",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "NginxBaselineNginxAlbF1D1EDAB": {
+      "Properties": {
+        "LoadBalancerAttributes": [
+          {
+            "Key": "deletion_protection.enabled",
+            "Value": "false",
+          },
+          {
+            "Key": "routing.http.drop_invalid_header_fields.enabled",
+            "Value": "true",
+          },
+        ],
+        "Scheme": "internet-facing",
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "NginxBaselineAlbSgA4C12255",
+              "GroupId",
+            ],
+          },
+        ],
+        "Subnets": [
+          {
+            "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcPublicSubnet1Subnet8F0F3D58121729B1",
+          },
+          {
+            "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcPublicSubnet2Subnet9B34745187AE98D0",
+          },
+          {
+            "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcPublicSubnet3SubnetAFAE82B5195C32B4",
+          },
+        ],
+        "Type": "application",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+    },
+    "NginxBaselineNginxAlbHttpListener55DBB046": {
+      "Properties": {
+        "DefaultActions": [
+          {
+            "TargetGroupArn": {
+              "Ref": "NginxBaselineNginxTgEE50BCF3",
+            },
+            "Type": "forward",
+          },
+        ],
+        "LoadBalancerArn": {
+          "Ref": "NginxBaselineNginxAlbF1D1EDAB",
+        },
+        "Port": 80,
+        "Protocol": "HTTP",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+    },
+    "NginxBaselineNginxAsgASG6663CD33": {
+      "Properties": {
+        "Cooldown": "60",
+        "HealthCheckGracePeriod": 120,
+        "HealthCheckType": "ELB",
+        "LaunchTemplate": {
+          "LaunchTemplateId": {
+            "Ref": "NginxBaselineNginxLaunchTemplateA09651AB",
+          },
+          "Version": {
+            "Fn::GetAtt": [
+              "NginxBaselineNginxLaunchTemplateA09651AB",
+              "LatestVersionNumber",
+            ],
+          },
+        },
+        "MaxSize": "10",
+        "MetricsCollection": [
+          {
+            "Granularity": "1Minute",
+          },
+        ],
+        "MinSize": "2",
+        "TargetGroupARNs": [
+          {
+            "Ref": "NginxBaselineNginxTgEE50BCF3",
+          },
+        ],
+        "VPCZoneIdentifier": [
+          {
+            "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcPrivateSubnet1SubnetE5F867DB96998A54",
+          },
+          {
+            "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcPrivateSubnet2SubnetA0D4648135CE54AD",
+          },
+          {
+            "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcPrivateSubnet3Subnet468F6988588C424A",
+          },
+        ],
+      },
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "UpdatePolicy": {
+        "AutoScalingRollingUpdate": {
+          "MaxBatchSize": 1,
+          "MinInstancesInService": 1,
+          "PauseTime": "PT5M",
+          "SuspendProcesses": [
+            "HealthCheck",
+            "ReplaceUnhealthy",
+            "AZRebalance",
+            "AlarmNotification",
+            "ScheduledActions",
+            "InstanceRefresh",
+          ],
+        },
+        "AutoScalingScheduledAction": {
+          "IgnoreUnmodifiedGroupSizeProperties": true,
+        },
+      },
+    },
+    "NginxBaselineNginxAsgScalingPolicyCpuScaling3EC205FD": {
+      "Properties": {
+        "AutoScalingGroupName": {
+          "Ref": "NginxBaselineNginxAsgASG6663CD33",
+        },
+        "Cooldown": "60",
+        "EstimatedInstanceWarmup": 120,
+        "PolicyType": "TargetTrackingScaling",
+        "TargetTrackingConfiguration": {
+          "PredefinedMetricSpecification": {
+            "PredefinedMetricType": "ASGAverageCPUUtilization",
+          },
+          "TargetValue": 60,
+        },
+      },
+      "Type": "AWS::AutoScaling::ScalingPolicy",
+    },
+    "NginxBaselineNginxAsgScalingPolicyRequestScaling2DD57F0F": {
+      "DependsOn": [
+        "NginxBaselineNginxAlbHttpListener55DBB046",
+      ],
+      "Properties": {
+        "AutoScalingGroupName": {
+          "Ref": "NginxBaselineNginxAsgASG6663CD33",
+        },
+        "Cooldown": "60",
+        "PolicyType": "TargetTrackingScaling",
+        "TargetTrackingConfiguration": {
+          "PredefinedMetricSpecification": {
+            "PredefinedMetricType": "ALBRequestCountPerTarget",
+            "ResourceLabel": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Fn::Select": [
+                      1,
+                      {
+                        "Fn::Split": [
+                          "/",
+                          {
+                            "Ref": "NginxBaselineNginxAlbHttpListener55DBB046",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  "/",
+                  {
+                    "Fn::Select": [
+                      2,
+                      {
+                        "Fn::Split": [
+                          "/",
+                          {
+                            "Ref": "NginxBaselineNginxAlbHttpListener55DBB046",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  "/",
+                  {
+                    "Fn::Select": [
+                      3,
+                      {
+                        "Fn::Split": [
+                          "/",
+                          {
+                            "Ref": "NginxBaselineNginxAlbHttpListener55DBB046",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  "/",
+                  {
+                    "Fn::GetAtt": [
+                      "NginxBaselineNginxTgEE50BCF3",
+                      "TargetGroupFullName",
+                    ],
+                  },
+                ],
+              ],
+            },
+          },
+          "TargetValue": 1000,
+        },
+      },
+      "Type": "AWS::AutoScaling::ScalingPolicy",
+    },
+    "NginxBaselineNginxLaunchTemplateA09651AB": {
+      "DependsOn": [
+        "NginxBaselineInstanceRole3CF18F94",
+      ],
+      "Properties": {
+        "LaunchTemplateData": {
+          "IamInstanceProfile": {
+            "Arn": {
+              "Fn::GetAtt": [
+                "NginxBaselineNginxLaunchTemplateProfileD3A3B815",
+                "Arn",
+              ],
+            },
+          },
+          "ImageId": {
+            "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61x8664C96584B6F00A464EAD1953AFF4B05118Parameter",
+          },
+          "InstanceType": "t3.medium",
+          "MetadataOptions": {
+            "HttpEndpoint": "enabled",
+            "HttpTokens": "required",
+          },
+          "SecurityGroupIds": [
+            {
+              "Fn::GetAtt": [
+                "NginxBaselineNginxSgADB815C3",
+                "GroupId",
+              ],
+            },
+          ],
+          "TagSpecifications": [
+            {
+              "ResourceType": "instance",
+              "Tags": [
+                {
+                  "Key": "Name",
+                  "Value": "TestComparison/NginxBaseline/NginxLaunchTemplate",
+                },
+              ],
+            },
+            {
+              "ResourceType": "volume",
+              "Tags": [
+                {
+                  "Key": "Name",
+                  "Value": "TestComparison/NginxBaseline/NginxLaunchTemplate",
+                },
+              ],
+            },
+          ],
+          "UserData": {
+            "Fn::Base64": "#!/bin/bash
+#!/bin/bash
+set -e
+
+# Install NGINX
+amazon-linux-extras install nginx1 -y || yum install nginx -y
+
+# Install CloudWatch Agent
+yum install amazon-cloudwatch-agent -y
+
+# Configure NGINX as a reverse proxy / gateway stub
+cat > /etc/nginx/conf.d/gateway.conf << 'NGINX_CONF'
+upstream backend {
+    server 127.0.0.1:8080;
+}
+
+server {
+    listen 80;
+    server_name _;
+
+    # Health check endpoint
+    location /health {
+        access_log off;
+        return 200 '{"status":"healthy","backend":"nginx-ec2","instance_id":"INSTANCE_ID"}\\n';
+        add_header Content-Type application/json;
+    }
+
+    # Gateway routing stub - simulates routing logic
+    location / {
+        # Add gateway headers for comparison metrics
+        add_header X-Backend-Type "nginx-ec2" always;
+        add_header X-Request-Id $request_id always;
+        add_header Access-Control-Allow-Origin "*" always;
+        add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;
+        add_header Access-Control-Allow-Headers "Content-Type, Authorization, X-Game-Id, X-Platform" always;
+
+        # Simulate backend response (replace with actual proxy_pass in production)
+        return 200 '{"message":"Request processed by NGINX","backend":"nginx-ec2","path":"$uri","method":"$request_method","timestamp":"$time_iso8601"}\\n';
+        add_header Content-Type application/json;
+    }
+
+    # NGINX status for monitoring
+    location /nginx_status {
+        stub_status on;
+        access_log off;
+        allow 127.0.0.1;
+        deny all;
+    }
+}
+NGINX_CONF
+
+# Replace INSTANCE_ID placeholder
+INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+sed -i "s/INSTANCE_ID/$INSTANCE_ID/g" /etc/nginx/conf.d/gateway.conf
+
+# Remove default server block
+rm -f /etc/nginx/conf.d/default.conf
+
+# Configure CloudWatch Agent for NGINX metrics
+cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json << 'CW_CONF'
+{
+  "agent": {
+    "metrics_collection_interval": 10,
+    "logfile": "/opt/aws/amazon-cloudwatch-agent/logs/amazon-cloudwatch-agent.log"
+  },
+  "metrics": {
+    "namespace": "GamingGateway/NginxBaseline",
+    "metrics_collected": {
+      "cpu": {
+        "resources": ["*"],
+        "measurement": ["cpu_usage_idle", "cpu_usage_user", "cpu_usage_system"],
+        "totalcpu": true
+      },
+      "mem": {
+        "measurement": ["mem_used_percent", "mem_available_percent"]
+      },
+      "net": {
+        "measurement": ["bytes_sent", "bytes_recv", "packets_sent", "packets_recv"]
+      },
+      "disk": {
+        "measurement": ["used_percent"],
+        "resources": ["/"]
+      }
+    },
+    "append_dimensions": {
+      "InstanceId": "\${aws:InstanceId}",
+      "AutoScalingGroupName": "\${aws:AutoScalingGroupName}"
+    }
+  },
+  "logs": {
+    "logs_collected": {
+      "files": {
+        "collect_list": [
+          {
+            "file_path": "/var/log/nginx/access.log",
+            "log_group_name": "/gaming-gateway/nginx/access",
+            "log_stream_name": "{instance_id}",
+            "retention_in_days": 14
+          },
+          {
+            "file_path": "/var/log/nginx/error.log",
+            "log_group_name": "/gaming-gateway/nginx/error",
+            "log_stream_name": "{instance_id}",
+            "retention_in_days": 14
+          }
+        ]
+      }
+    }
+  }
+}
+CW_CONF
+
+# Start services
+systemctl enable nginx
+systemctl start nginx
+/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+
+echo "NGINX baseline setup complete"",
+          },
+        },
+        "TagSpecifications": [
+          {
+            "ResourceType": "launch-template",
+            "Tags": [
+              {
+                "Key": "Name",
+                "Value": "TestComparison/NginxBaseline/NginxLaunchTemplate",
+              },
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::EC2::LaunchTemplate",
+    },
+    "NginxBaselineNginxLaunchTemplateProfileD3A3B815": {
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "NginxBaselineInstanceRole3CF18F94",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::InstanceProfile",
+    },
+    "NginxBaselineNginxSgADB815C3": {
+      "Properties": {
+        "GroupDescription": "Security group for NGINX baseline instances",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "VpcId": {
+          "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcFA33972A0C50181D",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "NginxBaselineNginxSgfromTestComparisonNginxBaselineAlbSg2F13BCE680893D4F96": {
+      "Properties": {
+        "Description": "Allow HTTP from ALB",
+        "FromPort": 80,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "NginxBaselineNginxSgADB815C3",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "NginxBaselineAlbSgA4C12255",
+            "GroupId",
+          ],
+        },
+        "ToPort": 80,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "NginxBaselineNginxTgEE50BCF3": {
+      "Properties": {
+        "HealthCheckIntervalSeconds": 15,
+        "HealthCheckPath": "/health",
+        "HealthCheckTimeoutSeconds": 5,
+        "HealthyThresholdCount": 2,
+        "Matcher": {
+          "HttpCode": "200",
+        },
+        "Port": 80,
+        "Protocol": "HTTP",
+        "TargetGroupAttributes": [
+          {
+            "Key": "deregistration_delay.timeout_seconds",
+            "Value": "30",
+          },
+          {
+            "Key": "stickiness.enabled",
+            "Value": "false",
+          },
+        ],
+        "TargetType": "instance",
+        "UnhealthyThresholdCount": 3,
+        "VpcId": {
+          "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcFA33972A0C50181D",
+        },
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
+
+exports[`CDK Stacks Core stack snapshot 1`] = `
+{
+  "Outputs": {
+    "AlbDnsName": {
+      "Description": "ALB DNS name",
+      "Value": {
+        "Fn::GetAtt": [
+          "GatewayAlb5D7963AA",
+          "DNSName",
+        ],
+      },
+    },
+    "DistributionDomainName": {
+      "Description": "CloudFront distribution domain name",
+      "Value": {
+        "Fn::GetAtt": [
+          "GatewayDistribution53D7E8F4",
+          "DomainName",
+        ],
+      },
+    },
+    "ExportsOutputFnGetAttGatewayAlb5D7963AADNSName9B0A18F9": {
+      "Export": {
+        "Name": "TestCore:ExportsOutputFnGetAttGatewayAlb5D7963AADNSName9B0A18F9",
+      },
+      "Value": {
+        "Fn::GetAtt": [
+          "GatewayAlb5D7963AA",
+          "DNSName",
+        ],
+      },
+    },
+    "ExportsOutputFnGetAttGatewayWafArn9581D75F": {
+      "Export": {
+        "Name": "TestCore:ExportsOutputFnGetAttGatewayWafArn9581D75F",
+      },
+      "Value": {
+        "Fn::GetAtt": [
+          "GatewayWaf",
+          "Arn",
+        ],
+      },
+    },
+    "ExportsOutputFnGetAttRouterFunction6AC6EF3BArn50C3B2AB": {
+      "Export": {
+        "Name": "TestCore:ExportsOutputFnGetAttRouterFunction6AC6EF3BArn50C3B2AB",
+      },
+      "Value": {
+        "Fn::GetAtt": [
+          "RouterFunction6AC6EF3B",
+          "Arn",
+        ],
+      },
+    },
+    "ExportsOutputRefGatewayAlb5D7963AAB94C1524": {
+      "Export": {
+        "Name": "TestCore:ExportsOutputRefGatewayAlb5D7963AAB94C1524",
+      },
+      "Value": {
+        "Ref": "GatewayAlb5D7963AA",
+      },
+    },
+    "ExportsOutputRefGatewayDistribution53D7E8F458FB311D": {
+      "Export": {
+        "Name": "TestCore:ExportsOutputRefGatewayDistribution53D7E8F458FB311D",
+      },
+      "Value": {
+        "Ref": "GatewayDistribution53D7E8F4",
+      },
+    },
+    "ExportsOutputRefRouterFunction6AC6EF3B8D7EA886": {
+      "Export": {
+        "Name": "TestCore:ExportsOutputRefRouterFunction6AC6EF3B8D7EA886",
+      },
+      "Value": {
+        "Ref": "RouterFunction6AC6EF3B",
+      },
+    },
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "AccessLogsBucket83982689": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256",
+              },
+            },
+          ],
+        },
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "ExpirationInDays": 90,
+              "Status": "Enabled",
+            },
+            {
+              "Status": "Enabled",
+              "Transitions": [
+                {
+                  "StorageClass": "INTELLIGENT_TIERING",
+                  "TransitionInDays": 30,
+                },
+              ],
+            },
+          ],
+        },
+        "OwnershipControls": {
+          "Rules": [
+            {
+              "ObjectOwnership": "BucketOwnerPreferred",
+            },
+          ],
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": false,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": false,
+          "RestrictPublicBuckets": true,
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "AccessLogsBucketPolicy7F77476F": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "AccessLogsBucket83982689",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "AccessLogsBucket83982689",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "AccessLogsBucket83982689",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "s3:PutObject",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::127311923021:root",
+                    ],
+                  ],
+                },
+              },
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "AccessLogsBucket83982689",
+                        "Arn",
+                      ],
+                    },
+                    "/alb-logs/AWSLogs/123456789012/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "s3:PutObject",
+              "Condition": {
+                "StringEquals": {
+                  "s3:x-amz-acl": "bucket-owner-full-control",
+                },
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "delivery.logs.amazonaws.com",
+              },
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "AccessLogsBucket83982689",
+                        "Arn",
+                      ],
+                    },
+                    "/alb-logs/AWSLogs/123456789012/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "s3:GetBucketAcl",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "delivery.logs.amazonaws.com",
+              },
+              "Resource": {
+                "Fn::GetAtt": [
+                  "AccessLogsBucket83982689",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
+    "AlbSg1155C1BE": {
+      "Properties": {
+        "GroupDescription": "Gaming Gateway ALB security group",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow HTTPS from CloudFront",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow from anyone on port 80",
+            "FromPort": 80,
+            "IpProtocol": "tcp",
+            "ToPort": 80,
+          },
+        ],
+        "VpcId": {
+          "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcFA33972A0C50181D",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "CanaryDeployCanaryDeploymentGroupA1AC9D0A": {
+      "Properties": {
+        "AlarmConfiguration": {
+          "Alarms": [
+            {
+              "Name": {
+                "Ref": "CanaryDeployDeploymentErrorAlarm7BF41A41",
+              },
+            },
+            {
+              "Name": {
+                "Ref": "CanaryDeployDeploymentLatencyAlarm03B7FD83",
+              },
+            },
+          ],
+          "Enabled": true,
+        },
+        "ApplicationName": {
+          "Ref": "CanaryDeployCanaryDeploymentGroupApplicationE09B879C",
+        },
+        "AutoRollbackConfiguration": {
+          "Enabled": true,
+          "Events": [
+            "DEPLOYMENT_FAILURE",
+            "DEPLOYMENT_STOP_ON_REQUEST",
+            "DEPLOYMENT_STOP_ON_ALARM",
+          ],
+        },
+        "DeploymentConfigName": "CodeDeployDefault.LambdaCanary10Percent5Minutes",
+        "DeploymentStyle": {
+          "DeploymentOption": "WITH_TRAFFIC_CONTROL",
+          "DeploymentType": "BLUE_GREEN",
+        },
+        "ServiceRoleArn": {
+          "Fn::GetAtt": [
+            "CanaryDeployCanaryDeploymentGroupServiceRoleAEF22CC5",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::CodeDeploy::DeploymentGroup",
+    },
+    "CanaryDeployCanaryDeploymentGroupApplicationE09B879C": {
+      "Properties": {
+        "ComputePlatform": "Lambda",
+      },
+      "Type": "AWS::CodeDeploy::Application",
+    },
+    "CanaryDeployCanaryDeploymentGroupServiceRoleAEF22CC5": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "codedeploy.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSCodeDeployRoleForLambdaLimited",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "CanaryDeployDeploymentErrorAlarm7BF41A41": {
+      "Properties": {
+        "AlarmDescription": "Canary deployment error rate exceeds 5% - triggering rollback",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "RouterFunction6AC6EF3B",
+            },
+          },
+          {
+            "Name": "Resource",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "RouterFunction6AC6EF3B",
+                  },
+                  ":live",
+                ],
+              ],
+            },
+          },
+        ],
+        "EvaluationPeriods": 2,
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda",
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 5,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "CanaryDeployDeploymentLatencyAlarm03B7FD83": {
+      "Properties": {
+        "AlarmDescription": "Canary deployment p99 latency regression detected",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Ref": "RouterFunction6AC6EF3B",
+            },
+          },
+          {
+            "Name": "Resource",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "RouterFunction6AC6EF3B",
+                  },
+                  ":live",
+                ],
+              ],
+            },
+          },
+        ],
+        "EvaluationPeriods": 2,
+        "ExtendedStatistic": "p99",
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "Period": 60,
+        "Threshold": 10000,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "CanaryDeployLiveAlias113E1A5C": {
+      "Properties": {
+        "FunctionName": {
+          "Ref": "RouterFunction6AC6EF3B",
+        },
+        "FunctionVersion": {
+          "Fn::GetAtt": [
+            "RouterFunctionCurrentVersionA5CAE69999fcf2d08386f4459318af21a5526a95",
+            "Version",
+          ],
+        },
+        "Name": "live",
+      },
+      "Type": "AWS::Lambda::Alias",
+      "UpdatePolicy": {
+        "CodeDeployLambdaAliasUpdate": {
+          "ApplicationName": {
+            "Ref": "CanaryDeployCanaryDeploymentGroupApplicationE09B879C",
+          },
+          "DeploymentGroupName": {
+            "Ref": "CanaryDeployCanaryDeploymentGroupA1AC9D0A",
+          },
+        },
+      },
+    },
+    "Cell0Handler9B7A54AF": {
+      "DependsOn": [
+        "Cell0HandlerServiceRoleDefaultPolicy2F1B6C09",
+        "Cell0HandlerServiceRoleC9521395",
+      ],
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": {
+          "S3Bucket": "cdk-hnb659fds-assets-123456789012-us-east-1",
+          "S3Key": "ff781ef7c8a9cb5f40095f3965b85728e8c403538d059eb59beca10198db5920.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "CELL_INDEX": "0",
+            "LOG_LEVEL": "info",
+            "METRICS_NAMESPACE": "GamingGateway/Cells",
+            "NODE_ENV": "production",
+            "ROUTER_FUNCTION_NAME": {
+              "Ref": "RouterFunction6AC6EF3B",
+            },
+          },
+        },
+        "Handler": "index.handler",
+        "Layers": [
+          "arn:aws:lambda:us-east-1:580247275435:layer:LambdaInsightsExtension-Arm64:5",
+        ],
+        "LoggingConfig": {
+          "LogGroup": {
+            "Ref": "Cell0LogGroupC8219BC4",
+          },
+        },
+        "MemorySize": 512,
+        "ReservedConcurrentExecutions": 200,
+        "Role": {
+          "Fn::GetAtt": [
+            "Cell0HandlerServiceRoleC9521395",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs20.x",
+        "Timeout": 29,
+        "TracingConfig": {
+          "Mode": "Active",
+        },
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            {
+              "Fn::GetAtt": [
+                "Cell0HandlerSecurityGroup09D83D2F",
+                "GroupId",
+              ],
+            },
+          ],
+          "SubnetIds": [
+            {
+              "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcPrivateSubnet1SubnetE5F867DB96998A54",
+            },
+            {
+              "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcPrivateSubnet2SubnetA0D4648135CE54AD",
+            },
+            {
+              "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcPrivateSubnet3Subnet468F6988588C424A",
+            },
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "Cell0HandlerInvoke2UTWxhlfyqbT5FTn5jvgbLgjFfJwzswGk55DU1HY01CC2FF6": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "Cell0Handler9B7A54AF",
+            "Arn",
+          ],
+        },
+        "Principal": "elasticloadbalancing.amazonaws.com",
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "Cell0HandlerSecurityGroup09D83D2F": {
+      "Properties": {
+        "GroupDescription": "Automatic security group for Lambda Function TestCoreCell0HandlerBED2FB8F",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "VpcId": {
+          "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcFA33972A0C50181D",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "Cell0HandlerServiceRoleC9521395": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole",
+              ],
+            ],
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "Cell0HandlerServiceRoleDefaultPolicy2F1B6C09": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "RouterFunction6AC6EF3B",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "RouterFunction6AC6EF3B",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "Cell0HandlerServiceRoleDefaultPolicy2F1B6C09",
+        "Roles": [
+          {
+            "Ref": "Cell0HandlerServiceRoleC9521395",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "Cell0LogGroupC8219BC4": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "RetentionInDays": 14,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "Cell1Handler24E67B69": {
+      "DependsOn": [
+        "Cell1HandlerServiceRoleDefaultPolicy23AB93E5",
+        "Cell1HandlerServiceRoleDD6F67B6",
+      ],
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": {
+          "S3Bucket": "cdk-hnb659fds-assets-123456789012-us-east-1",
+          "S3Key": "ff781ef7c8a9cb5f40095f3965b85728e8c403538d059eb59beca10198db5920.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "CELL_INDEX": "1",
+            "LOG_LEVEL": "info",
+            "METRICS_NAMESPACE": "GamingGateway/Cells",
+            "NODE_ENV": "production",
+            "ROUTER_FUNCTION_NAME": {
+              "Ref": "RouterFunction6AC6EF3B",
+            },
+          },
+        },
+        "Handler": "index.handler",
+        "Layers": [
+          "arn:aws:lambda:us-east-1:580247275435:layer:LambdaInsightsExtension-Arm64:5",
+        ],
+        "LoggingConfig": {
+          "LogGroup": {
+            "Ref": "Cell1LogGroup2F2B717B",
+          },
+        },
+        "MemorySize": 512,
+        "ReservedConcurrentExecutions": 200,
+        "Role": {
+          "Fn::GetAtt": [
+            "Cell1HandlerServiceRoleDD6F67B6",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs20.x",
+        "Timeout": 29,
+        "TracingConfig": {
+          "Mode": "Active",
+        },
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            {
+              "Fn::GetAtt": [
+                "Cell1HandlerSecurityGroup9F4C105F",
+                "GroupId",
+              ],
+            },
+          ],
+          "SubnetIds": [
+            {
+              "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcPrivateSubnet1SubnetE5F867DB96998A54",
+            },
+            {
+              "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcPrivateSubnet2SubnetA0D4648135CE54AD",
+            },
+            {
+              "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcPrivateSubnet3Subnet468F6988588C424A",
+            },
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "Cell1HandlerInvoke2UTWxhlfyqbT5FTn5jvgbLgjFfJwzswGk55DU1HYD04FD902": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "Cell1Handler24E67B69",
+            "Arn",
+          ],
+        },
+        "Principal": "elasticloadbalancing.amazonaws.com",
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "Cell1HandlerSecurityGroup9F4C105F": {
+      "Properties": {
+        "GroupDescription": "Automatic security group for Lambda Function TestCoreCell1HandlerB0410964",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "VpcId": {
+          "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcFA33972A0C50181D",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "Cell1HandlerServiceRoleDD6F67B6": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole",
+              ],
+            ],
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "Cell1HandlerServiceRoleDefaultPolicy23AB93E5": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "RouterFunction6AC6EF3B",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "RouterFunction6AC6EF3B",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "Cell1HandlerServiceRoleDefaultPolicy23AB93E5",
+        "Roles": [
+          {
+            "Ref": "Cell1HandlerServiceRoleDD6F67B6",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "Cell1LogGroup2F2B717B": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "RetentionInDays": 14,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "CellTg072D64A2D": {
+      "DependsOn": [
+        "Cell0HandlerInvoke2UTWxhlfyqbT5FTn5jvgbLgjFfJwzswGk55DU1HY01CC2FF6",
+      ],
+      "Properties": {
+        "HealthCheckEnabled": true,
+        "HealthCheckIntervalSeconds": 35,
+        "HealthCheckPath": "/health",
+        "HealthCheckTimeoutSeconds": 30,
+        "HealthyThresholdCount": 2,
+        "TargetType": "lambda",
+        "Targets": [
+          {
+            "Id": {
+              "Fn::GetAtt": [
+                "Cell0Handler9B7A54AF",
+                "Arn",
+              ],
+            },
+          },
+        ],
+        "UnhealthyThresholdCount": 3,
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+    },
+    "CellTg15F334453": {
+      "DependsOn": [
+        "Cell1HandlerInvoke2UTWxhlfyqbT5FTn5jvgbLgjFfJwzswGk55DU1HYD04FD902",
+      ],
+      "Properties": {
+        "HealthCheckEnabled": true,
+        "HealthCheckIntervalSeconds": 35,
+        "HealthCheckPath": "/health",
+        "HealthCheckTimeoutSeconds": 30,
+        "HealthyThresholdCount": 2,
+        "TargetType": "lambda",
+        "Targets": [
+          {
+            "Id": {
+              "Fn::GetAtt": [
+                "Cell1Handler24E67B69",
+                "Arn",
+              ],
+            },
+          },
+        ],
+        "UnhealthyThresholdCount": 3,
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+    },
+    "GatewayAlb5D7963AA": {
+      "DependsOn": [
+        "AccessLogsBucketPolicy7F77476F",
+      ],
+      "Properties": {
+        "LoadBalancerAttributes": [
+          {
+            "Key": "deletion_protection.enabled",
+            "Value": "false",
+          },
+          {
+            "Key": "routing.http.drop_invalid_header_fields.enabled",
+            "Value": "true",
+          },
+          {
+            "Key": "access_logs.s3.enabled",
+            "Value": "true",
+          },
+          {
+            "Key": "access_logs.s3.bucket",
+            "Value": {
+              "Ref": "AccessLogsBucket83982689",
+            },
+          },
+          {
+            "Key": "access_logs.s3.prefix",
+            "Value": "alb-logs",
+          },
+        ],
+        "Scheme": "internet-facing",
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "AlbSg1155C1BE",
+              "GroupId",
+            ],
+          },
+        ],
+        "Subnets": [
+          {
+            "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcPublicSubnet1Subnet8F0F3D58121729B1",
+          },
+          {
+            "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcPublicSubnet2Subnet9B34745187AE98D0",
+          },
+          {
+            "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcPublicSubnet3SubnetAFAE82B5195C32B4",
+          },
+        ],
+        "Type": "application",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+    },
+    "GatewayAlbHttpsListener4689125B": {
+      "Properties": {
+        "DefaultActions": [
+          {
+            "FixedResponseConfig": {
+              "ContentType": "application/json",
+              "MessageBody": "{"error":"Not Found","code":"ROUTE_NOT_FOUND"}",
+              "StatusCode": "404",
+            },
+            "Type": "fixed-response",
+          },
+        ],
+        "LoadBalancerArn": {
+          "Ref": "GatewayAlb5D7963AA",
+        },
+        "Port": 80,
+        "Protocol": "HTTP",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+    },
+    "GatewayAlbHttpsListenerCellRoutingRuleCADDF08E": {
+      "Properties": {
+        "Actions": [
+          {
+            "ForwardConfig": {
+              "TargetGroups": [
+                {
+                  "TargetGroupArn": {
+                    "Ref": "CellTg072D64A2D",
+                  },
+                  "Weight": 50,
+                },
+                {
+                  "TargetGroupArn": {
+                    "Ref": "CellTg15F334453",
+                  },
+                  "Weight": 50,
+                },
+              ],
+            },
+            "Type": "forward",
+          },
+        ],
+        "Conditions": [
+          {
+            "Field": "path-pattern",
+            "PathPatternConfig": {
+              "Values": [
+                "/*",
+              ],
+            },
+          },
+        ],
+        "ListenerArn": {
+          "Ref": "GatewayAlbHttpsListener4689125B",
+        },
+        "Priority": 1,
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::ListenerRule",
+    },
+    "GatewayDistribution53D7E8F4": {
+      "Properties": {
+        "DistributionConfig": {
+          "Comment": "Gaming Gateway - Player-facing edge distribution",
+          "DefaultCacheBehavior": {
+            "AllowedMethods": [
+              "GET",
+              "HEAD",
+              "OPTIONS",
+              "PUT",
+              "PATCH",
+              "POST",
+              "DELETE",
+            ],
+            "CachePolicyId": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
+            "Compress": true,
+            "OriginRequestPolicyId": "b689b0a8-53d0-40ab-baf2-68738e2966ac",
+            "ResponseHeadersPolicyId": "67f7725c-6f97-4210-82d7-5512b31e9d03",
+            "TargetOriginId": "TestCoreGatewayDistributionOrigin135B65264",
+            "ViewerProtocolPolicy": "https-only",
+          },
+          "Enabled": true,
+          "HttpVersion": "http2and3",
+          "IPV6Enabled": true,
+          "Logging": {
+            "Bucket": {
+              "Fn::GetAtt": [
+                "AccessLogsBucket83982689",
+                "RegionalDomainName",
+              ],
+            },
+            "Prefix": "cloudfront-logs/",
+          },
+          "Origins": [
+            {
+              "ConnectionAttempts": 3,
+              "ConnectionTimeout": 10,
+              "CustomOriginConfig": {
+                "OriginKeepaliveTimeout": 60,
+                "OriginProtocolPolicy": "http-only",
+                "OriginReadTimeout": 30,
+                "OriginSSLProtocols": [
+                  "TLSv1.2",
+                ],
+              },
+              "DomainName": {
+                "Fn::GetAtt": [
+                  "GatewayAlb5D7963AA",
+                  "DNSName",
+                ],
+              },
+              "Id": "TestCoreGatewayDistributionOrigin135B65264",
+            },
+          ],
+          "PriceClass": "PriceClass_All",
+          "WebACLId": {
+            "Fn::GetAtt": [
+              "GatewayWaf",
+              "Arn",
+            ],
+          },
+        },
+      },
+      "Type": "AWS::CloudFront::Distribution",
+    },
+    "GatewayHealthCheck": {
+      "Properties": {
+        "HealthCheckConfig": {
+          "EnableSNI": true,
+          "FailureThreshold": 2,
+          "FullyQualifiedDomainName": {
+            "Fn::GetAtt": [
+              "GatewayDistribution53D7E8F4",
+              "DomainName",
+            ],
+          },
+          "MeasureLatency": true,
+          "Port": 443,
+          "RequestInterval": 10,
+          "ResourcePath": "/health",
+          "Type": "HTTPS",
+        },
+        "HealthCheckTags": [
+          {
+            "Key": "Name",
+            "Value": "GamingGateway-Primary-HealthCheck",
+          },
+          {
+            "Key": "Purpose",
+            "Value": "ShieldAdvanced-DDoS-Detection",
+          },
+        ],
+      },
+      "Type": "AWS::Route53::HealthCheck",
+    },
+    "GatewayWaf": {
+      "Properties": {
+        "DefaultAction": {
+          "Allow": {},
+        },
+        "Name": "gaming-gateway-waf",
+        "Rules": [
+          {
+            "Name": "AWSManagedRulesCommonRuleSet",
+            "OverrideAction": {
+              "None": {},
+            },
+            "Priority": 1,
+            "Statement": {
+              "ManagedRuleGroupStatement": {
+                "Name": "AWSManagedRulesCommonRuleSet",
+                "VendorName": "AWS",
+              },
+            },
+            "VisibilityConfig": {
+              "CloudWatchMetricsEnabled": true,
+              "MetricName": "CommonRuleSet",
+              "SampledRequestsEnabled": true,
+            },
+          },
+          {
+            "Name": "AWSManagedRulesKnownBadInputsRuleSet",
+            "OverrideAction": {
+              "None": {},
+            },
+            "Priority": 2,
+            "Statement": {
+              "ManagedRuleGroupStatement": {
+                "Name": "AWSManagedRulesKnownBadInputsRuleSet",
+                "VendorName": "AWS",
+              },
+            },
+            "VisibilityConfig": {
+              "CloudWatchMetricsEnabled": true,
+              "MetricName": "KnownBadInputs",
+              "SampledRequestsEnabled": true,
+            },
+          },
+          {
+            "Action": {
+              "Count": {},
+            },
+            "Name": "PlayerReconnectionAllowance",
+            "Priority": 3,
+            "Statement": {
+              "RateBasedStatement": {
+                "AggregateKeyType": "IP",
+                "Limit": 50000,
+                "ScopeDownStatement": {
+                  "SizeConstraintStatement": {
+                    "ComparisonOperator": "GT",
+                    "FieldToMatch": {
+                      "SingleHeader": {
+                        "name": "x-game-id",
+                      },
+                    },
+                    "Size": 0,
+                    "TextTransformations": [
+                      {
+                        "Priority": 0,
+                        "Type": "NONE",
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+            "VisibilityConfig": {
+              "CloudWatchMetricsEnabled": true,
+              "MetricName": "PlayerReconnectionBurst",
+              "SampledRequestsEnabled": true,
+            },
+          },
+          {
+            "Action": {
+              "Block": {},
+            },
+            "Name": "NonPlayerRateLimit",
+            "Priority": 4,
+            "Statement": {
+              "RateBasedStatement": {
+                "AggregateKeyType": "IP",
+                "Limit": 100,
+                "ScopeDownStatement": {
+                  "NotStatement": {
+                    "Statement": {
+                      "SizeConstraintStatement": {
+                        "ComparisonOperator": "GT",
+                        "FieldToMatch": {
+                          "SingleHeader": {
+                            "name": "x-game-id",
+                          },
+                        },
+                        "Size": 0,
+                        "TextTransformations": [
+                          {
+                            "Priority": 0,
+                            "Type": "NONE",
+                          },
+                        ],
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            "VisibilityConfig": {
+              "CloudWatchMetricsEnabled": true,
+              "MetricName": "NonPlayerRateLimit",
+              "SampledRequestsEnabled": true,
+            },
+          },
+          {
+            "Action": {
+              "Block": {},
+            },
+            "Name": "PerClientRateLimit",
+            "Priority": 5,
+            "Statement": {
+              "RateBasedStatement": {
+                "AggregateKeyType": "IP",
+                "Limit": 100000,
+              },
+            },
+            "VisibilityConfig": {
+              "CloudWatchMetricsEnabled": true,
+              "MetricName": "PerClientRateLimit",
+              "SampledRequestsEnabled": true,
+            },
+          },
+          {
+            "Action": {
+              "Block": {},
+            },
+            "Name": "JA4FingerprintRateLimit",
+            "Priority": 51,
+            "Statement": {
+              "RateBasedStatement": {
+                "AggregateKeyType": "CUSTOM_KEYS",
+                "CustomKeys": [
+                  {
+                    "JA4Fingerprint": {
+                      "FallbackBehavior": "NO_MATCH",
+                    },
+                  },
+                ],
+                "Limit": 50000,
+              },
+            },
+            "VisibilityConfig": {
+              "CloudWatchMetricsEnabled": true,
+              "MetricName": "JA4FingerprintRateLimit",
+              "SampledRequestsEnabled": true,
+            },
+          },
+          {
+            "Action": {
+              "Count": {},
+            },
+            "Name": "JA4PlusIPRateLimit",
+            "Priority": 52,
+            "Statement": {
+              "RateBasedStatement": {
+                "AggregateKeyType": "CUSTOM_KEYS",
+                "CustomKeys": [
+                  {
+                    "JA4Fingerprint": {
+                      "FallbackBehavior": "NO_MATCH",
+                    },
+                  },
+                  {
+                    "IP": {},
+                  },
+                ],
+                "Limit": 5000,
+              },
+            },
+            "VisibilityConfig": {
+              "CloudWatchMetricsEnabled": true,
+              "MetricName": "JA4PlusIPRateLimit",
+              "SampledRequestsEnabled": true,
+            },
+          },
+          {
+            "Action": {
+              "Count": {},
+            },
+            "Name": "GameServerTrafficVisibility",
+            "Priority": 6,
+            "Statement": {
+              "ByteMatchStatement": {
+                "FieldToMatch": {
+                  "SingleHeader": {
+                    "name": "x-traffic-type",
+                  },
+                },
+                "PositionalConstraint": "EXACTLY",
+                "SearchString": "s2s",
+                "TextTransformations": [
+                  {
+                    "Priority": 0,
+                    "Type": "LOWERCASE",
+                  },
+                ],
+              },
+            },
+            "VisibilityConfig": {
+              "CloudWatchMetricsEnabled": true,
+              "MetricName": "GameServerTraffic",
+              "SampledRequestsEnabled": true,
+            },
+          },
+          {
+            "Action": {
+              "Count": {},
+            },
+            "Name": "AdminTrafficVisibility",
+            "Priority": 7,
+            "Statement": {
+              "ByteMatchStatement": {
+                "FieldToMatch": {
+                  "SingleHeader": {
+                    "name": "x-traffic-type",
+                  },
+                },
+                "PositionalConstraint": "EXACTLY",
+                "SearchString": "admin",
+                "TextTransformations": [
+                  {
+                    "Priority": 0,
+                    "Type": "LOWERCASE",
+                  },
+                ],
+              },
+            },
+            "VisibilityConfig": {
+              "CloudWatchMetricsEnabled": true,
+              "MetricName": "AdminTraffic",
+              "SampledRequestsEnabled": true,
+            },
+          },
+          {
+            "Action": {
+              "Count": {},
+            },
+            "Name": "GeoRestriction",
+            "Priority": 8,
+            "Statement": {
+              "GeoMatchStatement": {
+                "CountryCodes": [
+                  "CN",
+                  "RU",
+                ],
+              },
+            },
+            "VisibilityConfig": {
+              "CloudWatchMetricsEnabled": true,
+              "MetricName": "GeoRestriction",
+              "SampledRequestsEnabled": true,
+            },
+          },
+          {
+            "Name": "AWSManagedRulesBotControlRuleSet",
+            "OverrideAction": {
+              "None": {},
+            },
+            "Priority": 9,
+            "Statement": {
+              "ManagedRuleGroupStatement": {
+                "ManagedRuleGroupConfigs": [
+                  {
+                    "AWSManagedRulesBotControlRuleSet": {
+                      "InspectionLevel": "COMMON",
+                    },
+                  },
+                ],
+                "Name": "AWSManagedRulesBotControlRuleSet",
+                "VendorName": "AWS",
+              },
+            },
+            "VisibilityConfig": {
+              "CloudWatchMetricsEnabled": true,
+              "MetricName": "BotControl",
+              "SampledRequestsEnabled": true,
+            },
+          },
+        ],
+        "Scope": "CLOUDFRONT",
+        "VisibilityConfig": {
+          "CloudWatchMetricsEnabled": true,
+          "MetricName": "GamingGatewayWaf",
+          "SampledRequestsEnabled": true,
+        },
+      },
+      "Type": "AWS::WAFv2::WebACL",
+    },
+    "RateLimiterRedisClusterBF0D3693": {
+      "DependsOn": [
+        "RateLimiterRedisSubnetGroup6D32AC50",
+      ],
+      "Properties": {
+        "AutoMinorVersionUpgrade": true,
+        "CacheNodeType": "cache.t3.medium",
+        "CacheSubnetGroupName": {
+          "Ref": "RateLimiterRedisSubnetGroup6D32AC50",
+        },
+        "Engine": "redis",
+        "EngineVersion": "7.1",
+        "NumCacheNodes": 1,
+        "Port": 6379,
+        "PreferredMaintenanceWindow": "sun:05:00-sun:06:00",
+        "SnapshotRetentionLimit": 3,
+        "VpcSecurityGroupIds": [
+          {
+            "Fn::GetAtt": [
+              "RateLimiterRedisSg10EF4513",
+              "GroupId",
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::ElastiCache::CacheCluster",
+    },
+    "RateLimiterRedisSg10EF4513": {
+      "Properties": {
+        "GroupDescription": "Security group for Gaming Gateway Redis rate limiter",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "255.255.255.255/32",
+            "Description": "Disallow all traffic",
+            "FromPort": 252,
+            "IpProtocol": "icmp",
+            "ToPort": 86,
+          },
+        ],
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": {
+              "Fn::ImportValue": "TestNetwork:ExportsOutputFnGetAttGatewayVpcFA33972ACidrBlock92628452",
+            },
+            "Description": "Allow Redis access from VPC",
+            "FromPort": 6379,
+            "IpProtocol": "tcp",
+            "ToPort": 6379,
+          },
+        ],
+        "VpcId": {
+          "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcFA33972A0C50181D",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "RateLimiterRedisSubnetGroup6D32AC50": {
+      "Properties": {
+        "Description": "Subnet group for Gaming Gateway rate limiter",
+        "SubnetIds": [
+          {
+            "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcIsolatedSubnet1Subnet7CDA7DBB93CFD57C",
+          },
+          {
+            "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcIsolatedSubnet2Subnet42768B78E00A5FA3",
+          },
+          {
+            "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcIsolatedSubnet3SubnetCF797BED0DE1AF7D",
+          },
+        ],
+      },
+      "Type": "AWS::ElastiCache::SubnetGroup",
+    },
+    "RouterFunction6AC6EF3B": {
+      "DependsOn": [
+        "RouterFunctionServiceRoleDefaultPolicy81DD1B9C",
+        "RouterFunctionServiceRoleC0D99B26",
+      ],
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": {
+          "S3Bucket": "cdk-hnb659fds-assets-123456789012-us-east-1",
+          "S3Key": "11fbecefc79a8a6229896c3a584342d6d0275e080316b6477ee6fa72087f1c37.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "CELL_COUNT": "2",
+            "LOG_LEVEL": "info",
+            "NODE_ENV": "production",
+            "REDIS_ENDPOINT": {
+              "Fn::GetAtt": [
+                "RateLimiterRedisClusterBF0D3693",
+                "RedisEndpoint.Address",
+              ],
+            },
+            "REDIS_PORT": {
+              "Fn::GetAtt": [
+                "RateLimiterRedisClusterBF0D3693",
+                "RedisEndpoint.Port",
+              ],
+            },
+          },
+        },
+        "Handler": "index.handler",
+        "LoggingConfig": {
+          "LogGroup": {
+            "Ref": "RouterLogGroup58276E9E",
+          },
+        },
+        "MemorySize": 1024,
+        "ReservedConcurrentExecutions": 500,
+        "Role": {
+          "Fn::GetAtt": [
+            "RouterFunctionServiceRoleC0D99B26",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs20.x",
+        "Timeout": 29,
+        "TracingConfig": {
+          "Mode": "Active",
+        },
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            {
+              "Fn::GetAtt": [
+                "RouterFunctionSecurityGroup723E0BFE",
+                "GroupId",
+              ],
+            },
+          ],
+          "SubnetIds": [
+            {
+              "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcPrivateSubnet1SubnetE5F867DB96998A54",
+            },
+            {
+              "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcPrivateSubnet2SubnetA0D4648135CE54AD",
+            },
+            {
+              "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcPrivateSubnet3Subnet468F6988588C424A",
+            },
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "RouterFunctionCurrentVersionA5CAE69999fcf2d08386f4459318af21a5526a95": {
+      "Metadata": {
+        "aws:cdk:do-not-refactor": true,
+      },
+      "Properties": {
+        "FunctionName": {
+          "Ref": "RouterFunction6AC6EF3B",
+        },
+      },
+      "Type": "AWS::Lambda::Version",
+    },
+    "RouterFunctionSecurityGroup723E0BFE": {
+      "Properties": {
+        "GroupDescription": "Automatic security group for Lambda Function TestCoreRouterFunction3D13CBF3",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "VpcId": {
+          "Fn::ImportValue": "TestNetwork:ExportsOutputRefGatewayVpcFA33972A0C50181D",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "RouterFunctionServiceRoleC0D99B26": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "RouterFunctionServiceRoleDefaultPolicy81DD1B9C": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "RouterFunctionServiceRoleDefaultPolicy81DD1B9C",
+        "Roles": [
+          {
+            "Ref": "RouterFunctionServiceRoleC0D99B26",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "RouterLogGroup58276E9E": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "RetentionInDays": 30,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "ShieldProtection": {
+      "Properties": {
+        "Name": "GamingGateway-CloudFront-DDoS",
+        "ResourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:aws:cloudfront::123456789012:distribution/",
+              {
+                "Ref": "GatewayDistribution53D7E8F4",
+              },
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Shield::Protection",
+    },
+    "ShieldProtectionGroup": {
+      "Properties": {
+        "Aggregation": "MAX",
+        "Members": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:cloudfront::123456789012:distribution/",
+                {
+                  "Ref": "GatewayDistribution53D7E8F4",
+                },
+              ],
+            ],
+          },
+        ],
+        "Pattern": "ARBITRARY",
+        "ProtectionGroupId": "gaming-gateway-cloudfront",
+      },
+      "Type": "AWS::Shield::ProtectionGroup",
+    },
+    "WafLogGroupDFDE65B0": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "LogGroupName": "aws-waf-logs-gaming-gateway-TestCore",
+        "RetentionInDays": 30,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "WafLogging": {
+      "Properties": {
+        "LogDestinationConfigs": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":logs:us-east-1:123456789012:log-group:",
+                {
+                  "Ref": "WafLogGroupDFDE65B0",
+                },
+              ],
+            ],
+          },
+        ],
+        "ResourceArn": {
+          "Fn::GetAtt": [
+            "GatewayWaf",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::WAFv2::LoggingConfiguration",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
+
+exports[`CDK Stacks Network stack snapshot 1`] = `
+{
+  "Outputs": {
+    "ExportsOutputFnGetAttGatewayVpcFA33972ACidrBlock92628452": {
+      "Export": {
+        "Name": "TestNetwork:ExportsOutputFnGetAttGatewayVpcFA33972ACidrBlock92628452",
+      },
+      "Value": {
+        "Fn::GetAtt": [
+          "GatewayVpcFA33972A",
+          "CidrBlock",
+        ],
+      },
+    },
+    "ExportsOutputRefGatewayVpcFA33972A0C50181D": {
+      "Export": {
+        "Name": "TestNetwork:ExportsOutputRefGatewayVpcFA33972A0C50181D",
+      },
+      "Value": {
+        "Ref": "GatewayVpcFA33972A",
+      },
+    },
+    "ExportsOutputRefGatewayVpcIsolatedSubnet1Subnet7CDA7DBB93CFD57C": {
+      "Export": {
+        "Name": "TestNetwork:ExportsOutputRefGatewayVpcIsolatedSubnet1Subnet7CDA7DBB93CFD57C",
+      },
+      "Value": {
+        "Ref": "GatewayVpcIsolatedSubnet1Subnet7CDA7DBB",
+      },
+    },
+    "ExportsOutputRefGatewayVpcIsolatedSubnet2Subnet42768B78E00A5FA3": {
+      "Export": {
+        "Name": "TestNetwork:ExportsOutputRefGatewayVpcIsolatedSubnet2Subnet42768B78E00A5FA3",
+      },
+      "Value": {
+        "Ref": "GatewayVpcIsolatedSubnet2Subnet42768B78",
+      },
+    },
+    "ExportsOutputRefGatewayVpcIsolatedSubnet3SubnetCF797BED0DE1AF7D": {
+      "Export": {
+        "Name": "TestNetwork:ExportsOutputRefGatewayVpcIsolatedSubnet3SubnetCF797BED0DE1AF7D",
+      },
+      "Value": {
+        "Ref": "GatewayVpcIsolatedSubnet3SubnetCF797BED",
+      },
+    },
+    "ExportsOutputRefGatewayVpcPrivateSubnet1SubnetE5F867DB96998A54": {
+      "Export": {
+        "Name": "TestNetwork:ExportsOutputRefGatewayVpcPrivateSubnet1SubnetE5F867DB96998A54",
+      },
+      "Value": {
+        "Ref": "GatewayVpcPrivateSubnet1SubnetE5F867DB",
+      },
+    },
+    "ExportsOutputRefGatewayVpcPrivateSubnet2SubnetA0D4648135CE54AD": {
+      "Export": {
+        "Name": "TestNetwork:ExportsOutputRefGatewayVpcPrivateSubnet2SubnetA0D4648135CE54AD",
+      },
+      "Value": {
+        "Ref": "GatewayVpcPrivateSubnet2SubnetA0D46481",
+      },
+    },
+    "ExportsOutputRefGatewayVpcPrivateSubnet3Subnet468F6988588C424A": {
+      "Export": {
+        "Name": "TestNetwork:ExportsOutputRefGatewayVpcPrivateSubnet3Subnet468F6988588C424A",
+      },
+      "Value": {
+        "Ref": "GatewayVpcPrivateSubnet3Subnet468F6988",
+      },
+    },
+    "ExportsOutputRefGatewayVpcPublicSubnet1Subnet8F0F3D58121729B1": {
+      "Export": {
+        "Name": "TestNetwork:ExportsOutputRefGatewayVpcPublicSubnet1Subnet8F0F3D58121729B1",
+      },
+      "Value": {
+        "Ref": "GatewayVpcPublicSubnet1Subnet8F0F3D58",
+      },
+    },
+    "ExportsOutputRefGatewayVpcPublicSubnet2Subnet9B34745187AE98D0": {
+      "Export": {
+        "Name": "TestNetwork:ExportsOutputRefGatewayVpcPublicSubnet2Subnet9B34745187AE98D0",
+      },
+      "Value": {
+        "Ref": "GatewayVpcPublicSubnet2Subnet9B347451",
+      },
+    },
+    "ExportsOutputRefGatewayVpcPublicSubnet3SubnetAFAE82B5195C32B4": {
+      "Export": {
+        "Name": "TestNetwork:ExportsOutputRefGatewayVpcPublicSubnet3SubnetAFAE82B5195C32B4",
+      },
+      "Value": {
+        "Ref": "GatewayVpcPublicSubnet3SubnetAFAE82B5",
+      },
+    },
+    "VpcId": {
+      "Value": {
+        "Ref": "GatewayVpcFA33972A",
+      },
+    },
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "GatewayVpcDynamoDBEndpointECB1D122": {
+      "Properties": {
+        "RouteTableIds": [
+          {
+            "Ref": "GatewayVpcPrivateSubnet1RouteTable3F2BEFBB",
+          },
+          {
+            "Ref": "GatewayVpcPrivateSubnet2RouteTableA0183FA8",
+          },
+          {
+            "Ref": "GatewayVpcPrivateSubnet3RouteTable37B45CE6",
+          },
+          {
+            "Ref": "GatewayVpcPublicSubnet1RouteTable59A26D96",
+          },
+          {
+            "Ref": "GatewayVpcPublicSubnet2RouteTableEA10B601",
+          },
+          {
+            "Ref": "GatewayVpcPublicSubnet3RouteTable8195E07B",
+          },
+          {
+            "Ref": "GatewayVpcIsolatedSubnet1RouteTable96E71309",
+          },
+          {
+            "Ref": "GatewayVpcIsolatedSubnet2RouteTableB1CBD7CF",
+          },
+          {
+            "Ref": "GatewayVpcIsolatedSubnet3RouteTable5ADCE26A",
+          },
+        ],
+        "ServiceName": {
+          "Fn::Join": [
+            "",
+            [
+              "com.amazonaws.",
+              {
+                "Ref": "AWS::Region",
+              },
+              ".dynamodb",
+            ],
+          ],
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc",
+          },
+        ],
+        "VpcEndpointType": "Gateway",
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::VPCEndpoint",
+    },
+    "GatewayVpcFA33972A": {
+      "Properties": {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::VPC",
+    },
+    "GatewayVpcIGWE4D64C12": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::InternetGateway",
+    },
+    "GatewayVpcIsolatedSubnet1RouteTable96E71309": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/IsolatedSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "GatewayVpcIsolatedSubnet1RouteTableAssociation91BFED0E": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "GatewayVpcIsolatedSubnet1RouteTable96E71309",
+        },
+        "SubnetId": {
+          "Ref": "GatewayVpcIsolatedSubnet1Subnet7CDA7DBB",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "GatewayVpcIsolatedSubnet1Subnet7CDA7DBB": {
+      "Properties": {
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.16.0/24",
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Isolated",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Isolated",
+          },
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/IsolatedSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "GatewayVpcIsolatedSubnet2RouteTableAssociationF1A7F11E": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "GatewayVpcIsolatedSubnet2RouteTableB1CBD7CF",
+        },
+        "SubnetId": {
+          "Ref": "GatewayVpcIsolatedSubnet2Subnet42768B78",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "GatewayVpcIsolatedSubnet2RouteTableB1CBD7CF": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/IsolatedSubnet2",
+          },
+        ],
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "GatewayVpcIsolatedSubnet2Subnet42768B78": {
+      "Properties": {
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.17.0/24",
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Isolated",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Isolated",
+          },
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/IsolatedSubnet2",
+          },
+        ],
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "GatewayVpcIsolatedSubnet3RouteTable5ADCE26A": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/IsolatedSubnet3",
+          },
+        ],
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "GatewayVpcIsolatedSubnet3RouteTableAssociation3D37F2BF": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "GatewayVpcIsolatedSubnet3RouteTable5ADCE26A",
+        },
+        "SubnetId": {
+          "Ref": "GatewayVpcIsolatedSubnet3SubnetCF797BED",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "GatewayVpcIsolatedSubnet3SubnetCF797BED": {
+      "Properties": {
+        "AvailabilityZone": "dummy1c",
+        "CidrBlock": "10.0.18.0/24",
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Isolated",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Isolated",
+          },
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/IsolatedSubnet3",
+          },
+        ],
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "GatewayVpcLambdaEndpoint3F6403EE": {
+      "Properties": {
+        "PrivateDnsEnabled": true,
+        "SecurityGroupIds": [
+          {
+            "Fn::GetAtt": [
+              "GatewayVpcLambdaEndpointSecurityGroupE4D7828F",
+              "GroupId",
+            ],
+          },
+        ],
+        "ServiceName": "com.amazonaws.us-east-1.lambda",
+        "SubnetIds": [
+          {
+            "Ref": "GatewayVpcPrivateSubnet1SubnetE5F867DB",
+          },
+          {
+            "Ref": "GatewayVpcPrivateSubnet2SubnetA0D46481",
+          },
+          {
+            "Ref": "GatewayVpcPrivateSubnet3Subnet468F6988",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc",
+          },
+        ],
+        "VpcEndpointType": "Interface",
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::VPCEndpoint",
+    },
+    "GatewayVpcLambdaEndpointSecurityGroupE4D7828F": {
+      "Properties": {
+        "GroupDescription": "TestNetwork/GatewayVpc/LambdaEndpoint/SecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": {
+              "Fn::GetAtt": [
+                "GatewayVpcFA33972A",
+                "CidrBlock",
+              ],
+            },
+            "Description": {
+              "Fn::Join": [
+                "",
+                [
+                  "from ",
+                  {
+                    "Fn::GetAtt": [
+                      "GatewayVpcFA33972A",
+                      "CidrBlock",
+                    ],
+                  },
+                  ":443",
+                ],
+              ],
+            },
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc",
+          },
+        ],
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "GatewayVpcPrivateSubnet1DefaultRoute4BB3D6BD": {
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": {
+          "Ref": "GatewayVpcPublicSubnet1NATGateway2655B8C6",
+        },
+        "RouteTableId": {
+          "Ref": "GatewayVpcPrivateSubnet1RouteTable3F2BEFBB",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "GatewayVpcPrivateSubnet1RouteTable3F2BEFBB": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "GatewayVpcPrivateSubnet1RouteTableAssociation7205597E": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "GatewayVpcPrivateSubnet1RouteTable3F2BEFBB",
+        },
+        "SubnetId": {
+          "Ref": "GatewayVpcPrivateSubnet1SubnetE5F867DB",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "GatewayVpcPrivateSubnet1SubnetE5F867DB": {
+      "Properties": {
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.4.0/22",
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "GatewayVpcPrivateSubnet2DefaultRouteF0BC5388": {
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": {
+          "Ref": "GatewayVpcPublicSubnet2NATGatewayBDD5E37A",
+        },
+        "RouteTableId": {
+          "Ref": "GatewayVpcPrivateSubnet2RouteTableA0183FA8",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "GatewayVpcPrivateSubnet2RouteTableA0183FA8": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "GatewayVpcPrivateSubnet2RouteTableAssociationD0A71A7B": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "GatewayVpcPrivateSubnet2RouteTableA0183FA8",
+        },
+        "SubnetId": {
+          "Ref": "GatewayVpcPrivateSubnet2SubnetA0D46481",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "GatewayVpcPrivateSubnet2SubnetA0D46481": {
+      "Properties": {
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.8.0/22",
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "GatewayVpcPrivateSubnet3DefaultRoute92E4782D": {
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": {
+          "Ref": "GatewayVpcPublicSubnet1NATGateway2655B8C6",
+        },
+        "RouteTableId": {
+          "Ref": "GatewayVpcPrivateSubnet3RouteTable37B45CE6",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "GatewayVpcPrivateSubnet3RouteTable37B45CE6": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/PrivateSubnet3",
+          },
+        ],
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "GatewayVpcPrivateSubnet3RouteTableAssociation7D01B56E": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "GatewayVpcPrivateSubnet3RouteTable37B45CE6",
+        },
+        "SubnetId": {
+          "Ref": "GatewayVpcPrivateSubnet3Subnet468F6988",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "GatewayVpcPrivateSubnet3Subnet468F6988": {
+      "Properties": {
+        "AvailabilityZone": "dummy1c",
+        "CidrBlock": "10.0.12.0/22",
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/PrivateSubnet3",
+          },
+        ],
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "GatewayVpcPublicSubnet1DefaultRouteA28062D6": {
+      "DependsOn": [
+        "GatewayVpcVPCGW4AE7E466",
+      ],
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "GatewayVpcIGWE4D64C12",
+        },
+        "RouteTableId": {
+          "Ref": "GatewayVpcPublicSubnet1RouteTable59A26D96",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "GatewayVpcPublicSubnet1EIP7AAD5652": {
+      "Properties": {
+        "Domain": "vpc",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "GatewayVpcPublicSubnet1NATGateway2655B8C6": {
+      "DependsOn": [
+        "GatewayVpcPublicSubnet1DefaultRouteA28062D6",
+        "GatewayVpcPublicSubnet1RouteTableAssociationDC7ADA3F",
+      ],
+      "Properties": {
+        "AllocationId": {
+          "Fn::GetAtt": [
+            "GatewayVpcPublicSubnet1EIP7AAD5652",
+            "AllocationId",
+          ],
+        },
+        "SubnetId": {
+          "Ref": "GatewayVpcPublicSubnet1Subnet8F0F3D58",
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::NatGateway",
+    },
+    "GatewayVpcPublicSubnet1RouteTable59A26D96": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "GatewayVpcPublicSubnet1RouteTableAssociationDC7ADA3F": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "GatewayVpcPublicSubnet1RouteTable59A26D96",
+        },
+        "SubnetId": {
+          "Ref": "GatewayVpcPublicSubnet1Subnet8F0F3D58",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "GatewayVpcPublicSubnet1Subnet8F0F3D58": {
+      "Properties": {
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.0.0/24",
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "GatewayVpcPublicSubnet2DefaultRoute0E569AF7": {
+      "DependsOn": [
+        "GatewayVpcVPCGW4AE7E466",
+      ],
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "GatewayVpcIGWE4D64C12",
+        },
+        "RouteTableId": {
+          "Ref": "GatewayVpcPublicSubnet2RouteTableEA10B601",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "GatewayVpcPublicSubnet2EIP6A1AF6F2": {
+      "Properties": {
+        "Domain": "vpc",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/PublicSubnet2",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "GatewayVpcPublicSubnet2NATGatewayBDD5E37A": {
+      "DependsOn": [
+        "GatewayVpcPublicSubnet2DefaultRoute0E569AF7",
+        "GatewayVpcPublicSubnet2RouteTableAssociationD419BD8D",
+      ],
+      "Properties": {
+        "AllocationId": {
+          "Fn::GetAtt": [
+            "GatewayVpcPublicSubnet2EIP6A1AF6F2",
+            "AllocationId",
+          ],
+        },
+        "SubnetId": {
+          "Ref": "GatewayVpcPublicSubnet2Subnet9B347451",
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/PublicSubnet2",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::NatGateway",
+    },
+    "GatewayVpcPublicSubnet2RouteTableAssociationD419BD8D": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "GatewayVpcPublicSubnet2RouteTableEA10B601",
+        },
+        "SubnetId": {
+          "Ref": "GatewayVpcPublicSubnet2Subnet9B347451",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "GatewayVpcPublicSubnet2RouteTableEA10B601": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "GatewayVpcPublicSubnet2Subnet9B347451": {
+      "Properties": {
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.1.0/24",
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "GatewayVpcPublicSubnet3DefaultRoute3CE6C2DB": {
+      "DependsOn": [
+        "GatewayVpcVPCGW4AE7E466",
+      ],
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "GatewayVpcIGWE4D64C12",
+        },
+        "RouteTableId": {
+          "Ref": "GatewayVpcPublicSubnet3RouteTable8195E07B",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "GatewayVpcPublicSubnet3RouteTable8195E07B": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/PublicSubnet3",
+          },
+        ],
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "GatewayVpcPublicSubnet3RouteTableAssociation9D41899D": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "GatewayVpcPublicSubnet3RouteTable8195E07B",
+        },
+        "SubnetId": {
+          "Ref": "GatewayVpcPublicSubnet3SubnetAFAE82B5",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "GatewayVpcPublicSubnet3SubnetAFAE82B5": {
+      "Properties": {
+        "AvailabilityZone": "dummy1c",
+        "CidrBlock": "10.0.2.0/24",
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/PublicSubnet3",
+          },
+        ],
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "GatewayVpcS3EndpointA4D10E05": {
+      "Properties": {
+        "RouteTableIds": [
+          {
+            "Ref": "GatewayVpcPrivateSubnet1RouteTable3F2BEFBB",
+          },
+          {
+            "Ref": "GatewayVpcPrivateSubnet2RouteTableA0183FA8",
+          },
+          {
+            "Ref": "GatewayVpcPrivateSubnet3RouteTable37B45CE6",
+          },
+          {
+            "Ref": "GatewayVpcPublicSubnet1RouteTable59A26D96",
+          },
+          {
+            "Ref": "GatewayVpcPublicSubnet2RouteTableEA10B601",
+          },
+          {
+            "Ref": "GatewayVpcPublicSubnet3RouteTable8195E07B",
+          },
+          {
+            "Ref": "GatewayVpcIsolatedSubnet1RouteTable96E71309",
+          },
+          {
+            "Ref": "GatewayVpcIsolatedSubnet2RouteTableB1CBD7CF",
+          },
+          {
+            "Ref": "GatewayVpcIsolatedSubnet3RouteTable5ADCE26A",
+          },
+        ],
+        "ServiceName": {
+          "Fn::Join": [
+            "",
+            [
+              "com.amazonaws.",
+              {
+                "Ref": "AWS::Region",
+              },
+              ".s3",
+            ],
+          ],
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc",
+          },
+        ],
+        "VpcEndpointType": "Gateway",
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::VPCEndpoint",
+    },
+    "GatewayVpcSQSEndpointFBDA6827": {
+      "Properties": {
+        "PrivateDnsEnabled": true,
+        "SecurityGroupIds": [
+          {
+            "Fn::GetAtt": [
+              "GatewayVpcSQSEndpointSecurityGroupA400FDD4",
+              "GroupId",
+            ],
+          },
+        ],
+        "ServiceName": "com.amazonaws.us-east-1.sqs",
+        "SubnetIds": [
+          {
+            "Ref": "GatewayVpcPrivateSubnet1SubnetE5F867DB",
+          },
+          {
+            "Ref": "GatewayVpcPrivateSubnet2SubnetA0D46481",
+          },
+          {
+            "Ref": "GatewayVpcPrivateSubnet3Subnet468F6988",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc",
+          },
+        ],
+        "VpcEndpointType": "Interface",
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::VPCEndpoint",
+    },
+    "GatewayVpcSQSEndpointSecurityGroupA400FDD4": {
+      "Properties": {
+        "GroupDescription": "TestNetwork/GatewayVpc/SQSEndpoint/SecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": {
+              "Fn::GetAtt": [
+                "GatewayVpcFA33972A",
+                "CidrBlock",
+              ],
+            },
+            "Description": {
+              "Fn::Join": [
+                "",
+                [
+                  "from ",
+                  {
+                    "Fn::GetAtt": [
+                      "GatewayVpcFA33972A",
+                      "CidrBlock",
+                    ],
+                  },
+                  ":443",
+                ],
+              ],
+            },
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc",
+          },
+        ],
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "GatewayVpcSecretsManagerEndpointA2FEA472": {
+      "Properties": {
+        "PrivateDnsEnabled": true,
+        "SecurityGroupIds": [
+          {
+            "Fn::GetAtt": [
+              "GatewayVpcSecretsManagerEndpointSecurityGroupD2AF5A55",
+              "GroupId",
+            ],
+          },
+        ],
+        "ServiceName": "com.amazonaws.us-east-1.secretsmanager",
+        "SubnetIds": [
+          {
+            "Ref": "GatewayVpcPrivateSubnet1SubnetE5F867DB",
+          },
+          {
+            "Ref": "GatewayVpcPrivateSubnet2SubnetA0D46481",
+          },
+          {
+            "Ref": "GatewayVpcPrivateSubnet3Subnet468F6988",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc",
+          },
+        ],
+        "VpcEndpointType": "Interface",
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::VPCEndpoint",
+    },
+    "GatewayVpcSecretsManagerEndpointSecurityGroupD2AF5A55": {
+      "Properties": {
+        "GroupDescription": "TestNetwork/GatewayVpc/SecretsManagerEndpoint/SecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": {
+              "Fn::GetAtt": [
+                "GatewayVpcFA33972A",
+                "CidrBlock",
+              ],
+            },
+            "Description": {
+              "Fn::Join": [
+                "",
+                [
+                  "from ",
+                  {
+                    "Fn::GetAtt": [
+                      "GatewayVpcFA33972A",
+                      "CidrBlock",
+                    ],
+                  },
+                  ":443",
+                ],
+              ],
+            },
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc",
+          },
+        ],
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "GatewayVpcVPCGW4AE7E466": {
+      "Properties": {
+        "InternetGatewayId": {
+          "Ref": "GatewayVpcIGWE4D64C12",
+        },
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+    },
+    "GatewayVpcvpcflowlogsFlowLogDFDC53C2": {
+      "Properties": {
+        "DeliverLogsPermissionArn": {
+          "Fn::GetAtt": [
+            "GatewayVpcvpcflowlogsIAMRoleDD848CA2",
+            "Arn",
+          ],
+        },
+        "LogDestinationType": "cloud-watch-logs",
+        "LogGroupName": {
+          "Ref": "GatewayVpcvpcflowlogsLogGroup89D6BFA5",
+        },
+        "ResourceId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+        "ResourceType": "VPC",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/vpc-flow-logs",
+          },
+        ],
+        "TrafficType": "ALL",
+      },
+      "Type": "AWS::EC2::FlowLog",
+    },
+    "GatewayVpcvpcflowlogsIAMRoleDD848CA2": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "vpc-flow-logs.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/vpc-flow-logs",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "GatewayVpcvpcflowlogsIAMRoleDefaultPolicy0CD6E14B": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "logs:DescribeLogStreams",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "GatewayVpcvpcflowlogsLogGroup89D6BFA5",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "GatewayVpcvpcflowlogsIAMRoleDefaultPolicy0CD6E14B",
+        "Roles": [
+          {
+            "Ref": "GatewayVpcvpcflowlogsIAMRoleDD848CA2",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "GatewayVpcvpcflowlogsLogGroup89D6BFA5": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "RetentionInDays": 731,
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestNetwork/GatewayVpc/vpc-flow-logs",
+          },
+        ],
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "InboundResolver": {
+      "Properties": {
+        "Direction": "INBOUND",
+        "IpAddresses": [
+          {
+            "SubnetId": {
+              "Ref": "GatewayVpcPrivateSubnet1SubnetE5F867DB",
+            },
+          },
+          {
+            "SubnetId": {
+              "Ref": "GatewayVpcPrivateSubnet2SubnetA0D46481",
+            },
+          },
+        ],
+        "Name": "gaming-gateway-inbound-resolver",
+        "SecurityGroupIds": [
+          {
+            "Fn::GetAtt": [
+              "ResolverSgFF83DCD0",
+              "GroupId",
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::Route53Resolver::ResolverEndpoint",
+    },
+    "OutboundResolver": {
+      "Properties": {
+        "Direction": "OUTBOUND",
+        "IpAddresses": [
+          {
+            "SubnetId": {
+              "Ref": "GatewayVpcPrivateSubnet1SubnetE5F867DB",
+            },
+          },
+          {
+            "SubnetId": {
+              "Ref": "GatewayVpcPrivateSubnet2SubnetA0D46481",
+            },
+          },
+        ],
+        "Name": "gaming-gateway-outbound-resolver",
+        "SecurityGroupIds": [
+          {
+            "Fn::GetAtt": [
+              "ResolverSgFF83DCD0",
+              "GroupId",
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::Route53Resolver::ResolverEndpoint",
+    },
+    "PrivateLinkSg1C9080AB": {
+      "Properties": {
+        "GroupDescription": "Security group for PrivateLink game server connections",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "255.255.255.255/32",
+            "Description": "Disallow all traffic",
+            "FromPort": 252,
+            "IpProtocol": "icmp",
+            "ToPort": 86,
+          },
+        ],
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "ResolverSgFF83DCD0": {
+      "Properties": {
+        "GroupDescription": "Security group for Route53 Resolver endpoints",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": {
+              "Fn::GetAtt": [
+                "GatewayVpcFA33972A",
+                "CidrBlock",
+              ],
+            },
+            "Description": "Allow DNS from VPC",
+            "FromPort": 53,
+            "IpProtocol": "udp",
+            "ToPort": 53,
+          },
+          {
+            "CidrIp": {
+              "Fn::GetAtt": [
+                "GatewayVpcFA33972A",
+                "CidrBlock",
+              ],
+            },
+            "Description": "Allow DNS TCP from VPC",
+            "FromPort": 53,
+            "IpProtocol": "tcp",
+            "ToPort": 53,
+          },
+        ],
+        "VpcId": {
+          "Ref": "GatewayVpcFA33972A",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
+
+exports[`CDK Stacks Observability stack snapshot 1`] = `
+{
+  "Outputs": {
+    "AlertTopicArn": {
+      "Description": "SNS Topic ARN for gateway alerts",
+      "Value": {
+        "Ref": "GatewayAlerts7C3E47C4",
+      },
+    },
+    "DashboardUrl": {
+      "Description": "CloudWatch Dashboard URL",
+      "Value": "https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#dashboards:name=GamingGateway-Operations",
+    },
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "CriticalGatewayAlarm79102060": {
+      "Properties": {
+        "AlarmDescription": "CRITICAL: Both error rate and latency thresholds breached simultaneously",
+        "AlarmName": "TestObservabilityCriticalGatewayAlarmF71FB2E3",
+        "AlarmRule": {
+          "Fn::Join": [
+            "",
+            [
+              "(ALARM("",
+              {
+                "Fn::GetAtt": [
+                  "HighErrorRate9827C77C",
+                  "Arn",
+                ],
+              },
+              "") AND ALARM("",
+              {
+                "Fn::GetAtt": [
+                  "HighLatencyBDC1CAA1",
+                  "Arn",
+                ],
+              },
+              ""))",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::CloudWatch::CompositeAlarm",
+    },
+    "GatewayAlerts7C3E47C4": {
+      "Properties": {
+        "DisplayName": "Gaming Gateway Alerts",
+        "TopicName": "gaming-gateway-alerts",
+      },
+      "Type": "AWS::SNS::Topic",
+    },
+    "GatewayDashboard01041926": {
+      "Properties": {
+        "DashboardBody": {
+          "Fn::Join": [
+            "",
+            [
+              "{"periodOverride":"auto","widgets":[{"type":"text","width":24,"height":1,"x":0,"y":0,"properties":{"markdown":"# 🎮 Gaming Gateway - Operations Dashboard\\n---"}},{"type":"metric","width":8,"height":6,"x":0,"y":1,"properties":{"view":"timeSeries","title":"CloudFront - Request Volume","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/CloudFront","Requests","DistributionId","",
+              {
+                "Fn::ImportValue": "TestCore:ExportsOutputRefGatewayDistribution53D7E8F458FB311D",
+              },
+              "",{"period":60,"stat":"Sum"}]],"yAxis":{}}},{"type":"metric","width":8,"height":6,"x":8,"y":1,"properties":{"view":"timeSeries","title":"CloudFront - Error Rates","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/CloudFront","4xxErrorRate","DistributionId","",
+              {
+                "Fn::ImportValue": "TestCore:ExportsOutputRefGatewayDistribution53D7E8F458FB311D",
+              },
+              "",{"period":60}],["AWS/CloudFront","5xxErrorRate","DistributionId","",
+              {
+                "Fn::ImportValue": "TestCore:ExportsOutputRefGatewayDistribution53D7E8F458FB311D",
+              },
+              "",{"period":60}]],"yAxis":{"left":{"max":10}}}},{"type":"metric","width":8,"height":6,"x":16,"y":1,"properties":{"view":"singleValue","title":"Lambda Concurrency","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/Lambda","ConcurrentExecutions","FunctionName","",
+              {
+                "Fn::ImportValue": "TestCore:ExportsOutputRefRouterFunction6AC6EF3B8D7EA886",
+              },
+              "",{"period":60,"stat":"Maximum"}]]}},{"type":"metric","width":8,"height":6,"x":0,"y":7,"properties":{"view":"timeSeries","title":"Lambda - Duration (p99)","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/Lambda","Duration","FunctionName","",
+              {
+                "Fn::ImportValue": "TestCore:ExportsOutputRefRouterFunction6AC6EF3B8D7EA886",
+              },
+              "",{"period":60,"stat":"p99"}]],"annotations":{"horizontal":[{"value":5000,"label":"SLA Threshold (5s)","color":"#ff0000","yAxis":"left"}]},"yAxis":{}}},{"type":"metric","width":8,"height":6,"x":8,"y":7,"properties":{"view":"timeSeries","title":"Lambda - Errors & Throttles","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/Lambda","Errors","FunctionName","",
+              {
+                "Fn::ImportValue": "TestCore:ExportsOutputRefRouterFunction6AC6EF3B8D7EA886",
+              },
+              "",{"period":60,"stat":"Sum"}],["AWS/Lambda","Throttles","FunctionName","",
+              {
+                "Fn::ImportValue": "TestCore:ExportsOutputRefRouterFunction6AC6EF3B8D7EA886",
+              },
+              "",{"period":60,"stat":"Sum","yAxis":"right"}]],"yAxis":{}}},{"type":"metric","width":8,"height":6,"x":16,"y":7,"properties":{"view":"timeSeries","title":"Lambda - Invocations","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/Lambda","Invocations","FunctionName","",
+              {
+                "Fn::ImportValue": "TestCore:ExportsOutputRefRouterFunction6AC6EF3B8D7EA886",
+              },
+              "",{"period":60,"stat":"Sum"}]],"yAxis":{}}},{"type":"text","width":24,"height":1,"x":0,"y":13,"properties":{"markdown":"## 🔐 JA4 TLS Fingerprint Analysis & WAF Protection\\n---"}},{"type":"metric","width":8,"height":6,"x":0,"y":14,"properties":{"view":"timeSeries","title":"JA4 Fingerprint - Rate Limit Activity","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/WAFV2","BlockedRequests","Region","us-east-1","Rule","JA4FingerprintRateLimit","WebACL","gaming-gateway-waf",{"label":"JA4 Rate Limit Blocks","period":60,"stat":"Sum"}],["AWS/WAFV2","CountedRequests","Region","us-east-1","Rule","JA4PlusIPRateLimit","WebACL","gaming-gateway-waf",{"label":"JA4+IP Rate Limit Counted","period":60,"stat":"Sum"}]],"yAxis":{"left":{"label":"Requests","min":0}}}},{"type":"metric","width":8,"height":6,"x":8,"y":14,"properties":{"view":"timeSeries","title":"Player Reconnection vs DDoS Blocks","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/WAFV2","CountedRequests","Region","us-east-1","Rule","PlayerReconnectionAllowance","WebACL","gaming-gateway-waf",{"label":"Player Reconnection Burst","period":60,"stat":"Sum"}],["AWS/WAFV2","BlockedRequests","Region","us-east-1","Rule","NonPlayerRateLimit","WebACL","gaming-gateway-waf",{"label":"Non-Player Blocks","period":60,"stat":"Sum","yAxis":"right"}]],"yAxis":{"left":{"label":"Allowed (counted)"},"right":{"label":"Blocked"}}}},{"type":"metric","width":8,"height":6,"x":16,"y":14,"properties":{"view":"timeSeries","title":"Traffic Distribution (S2S + Admin)","region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","metrics":[["AWS/WAFV2","CountedRequests","Region","us-east-1","Rule","GameServerTrafficVisibility","WebACL","gaming-gateway-waf",{"label":"Game Server Traffic","period":60,"stat":"Sum"}],["AWS/WAFV2","CountedRequests","Region","us-east-1","Rule","AdminTrafficVisibility","WebACL","gaming-gateway-waf",{"label":"Admin Traffic","period":60,"stat":"Sum"}]],"yAxis":{}}}]}",
+            ],
+          ],
+        },
+        "DashboardName": "GamingGateway-Operations",
+      },
+      "Type": "AWS::CloudWatch::Dashboard",
+    },
+    "HighErrorRate9827C77C": {
+      "Properties": {
+        "AlarmActions": [
+          {
+            "Ref": "GatewayAlerts7C3E47C4",
+          },
+        ],
+        "AlarmDescription": "CloudFront 5xx error rate exceeds 5% for 2 out of 3 minutes",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "DatapointsToAlarm": 2,
+        "Dimensions": [
+          {
+            "Name": "DistributionId",
+            "Value": {
+              "Fn::ImportValue": "TestCore:ExportsOutputRefGatewayDistribution53D7E8F458FB311D",
+            },
+          },
+        ],
+        "EvaluationPeriods": 3,
+        "MetricName": "5xxErrorRate",
+        "Namespace": "AWS/CloudFront",
+        "Period": 60,
+        "Statistic": "Average",
+        "Threshold": 5,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "HighLatencyBDC1CAA1": {
+      "Properties": {
+        "AlarmActions": [
+          {
+            "Ref": "GatewayAlerts7C3E47C4",
+          },
+        ],
+        "AlarmDescription": "Lambda p99 latency exceeds 5 seconds",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "DatapointsToAlarm": 3,
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Fn::ImportValue": "TestCore:ExportsOutputRefRouterFunction6AC6EF3B8D7EA886",
+            },
+          },
+        ],
+        "EvaluationPeriods": 5,
+        "ExtendedStatistic": "p99",
+        "MetricName": "Duration",
+        "Namespace": "AWS/Lambda",
+        "Period": 60,
+        "Threshold": 5000,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "LambdaThrottles07F41D23": {
+      "Properties": {
+        "AlarmActions": [
+          {
+            "Ref": "GatewayAlerts7C3E47C4",
+          },
+        ],
+        "AlarmDescription": "Lambda throttles detected - consider increasing concurrency",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": {
+              "Fn::ImportValue": "TestCore:ExportsOutputRefRouterFunction6AC6EF3B8D7EA886",
+            },
+          },
+        ],
+        "EvaluationPeriods": 2,
+        "MetricName": "Throttles",
+        "Namespace": "AWS/Lambda",
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 10,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "TrafficAnomalyDetector": {
+      "Properties": {
+        "Dimensions": [
+          {
+            "Name": "DistributionId",
+            "Value": {
+              "Fn::ImportValue": "TestCore:ExportsOutputRefGatewayDistribution53D7E8F458FB311D",
+            },
+          },
+        ],
+        "MetricName": "Requests",
+        "Namespace": "AWS/CloudFront",
+        "Stat": "Sum",
+      },
+      "Type": "AWS::CloudWatch::AnomalyDetector",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
